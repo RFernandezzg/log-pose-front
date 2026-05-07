@@ -1,92 +1,110 @@
 <section class="space-y-10 pb-20">
   <header class="flex items-end justify-between border-b border-[#857752]/20 pb-8">
     <div class="space-y-2">
-      <div class="inline-flex items-center gap-2 rounded-full bg-[#857752]/10 px-3 py-1 text-[10px] font-black tracking-widest text-[#857752] uppercase">
-        {{ 'CARDS.FILTERS' | translate }}
-      </div>
       <h1 class="text-4xl font-black text-white tracking-tight">{{ 'CARDS.TITLE' | translate }}</h1>
       <p class="text-sm text-slate-400 font-medium">{{ 'CARDS.SUBTITLE' | translate }}</p>
-    </div>
-    <div class="hidden lg:block">
-       <button (click)="search()" class="rounded-2xl bg-[#857752] px-8 py-4 text-sm font-black text-white shadow-xl shadow-[#857752]/20 hover:bg-[#a3946b] transition-all active:scale-95">{{ 'CARDS.FILTERS' | translate }}</button>
     </div>
   </header>
 
   <div class="mx-auto w-full max-w-[1800px] lg:grid lg:grid-cols-[350px_minmax(0,1fr)] lg:items-start gap-10">
     <aside class="self-start rounded-[2.5rem] border border-white/5 bg-[#1d2269] p-8 shadow-2xl">
       <div class="flex items-center justify-between mb-8">
-         <h2 class="text-sm font-black text-[#857752] uppercase tracking-[0.2em]">{{ 'CARDS.FILTERS' | translate }}</h2>
-         <button (click)="clearFilters()" class="text-[10px] font-black text-slate-400 hover:text-white uppercase transition-colors">{{ 'CARDS.CLEAR_FILTERS' | translate }}</button>
+        <h2 class="text-sm font-black text-[#857752] uppercase tracking-[0.2em]">{{ 'CARDS.FILTERS' | translate }}</h2>
+        <button (click)="clearFilters()"
+          class="text-[10px] font-black text-slate-400 hover:text-white uppercase transition-colors">{{
+          'CARDS.CLEAR_FILTERS' | translate }}</button>
       </div>
       <form [formGroup]="filters" (ngSubmit)="search()" class="space-y-8">
         <div class="space-y-4">
           <div>
-            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.SEARCH_PLACEHOLDER' | translate }}</label>
-            <input formControlName="nameOrId" [placeholder]="'Ej: op01-001'" class="mt-2 w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-4 py-3 text-sm text-white focus:border-[#857752]/50 transition-all outline-none" />
+            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.SEARCH_PLACEHOLDER'
+              | translate }}</label>
+            <input formControlName="nameOrId" [placeholder]="'Ej: op01-001'"
+              class="mt-2 w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-4 py-3 text-sm text-white focus:border-[#857752]/50 transition-all outline-none" />
           </div>
 
           <div>
-            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'HOME.CTA.INVITE' | translate }}</label>
-            <input formControlName="text" [placeholder]="'CARDS.SEARCH_PLACEHOLDER' | translate" class="mt-2 w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-4 py-3 text-sm text-white focus:border-[#857752]/50 transition-all outline-none" />
+            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.SEARCH_TEXT' |
+              translate }}</label>
+            <input formControlName="text" [placeholder]="'CARDS.SEARCH_PLACEHOLDER' | translate"
+              class="mt-2 w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-4 py-3 text-sm text-white focus:border-[#857752]/50 transition-all outline-none" />
           </div>
 
           <div>
-            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.SET' | translate }}</label>
-            <select formControlName="set" class="mt-2 w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-4 py-3 text-sm text-white focus:border-[#857752]/50 transition-all outline-none appearance-none">
-              <option value="">-- {{ 'CARDS.CAT_ALL' | translate | translate }} --</option>
-              <option *ngFor="let s of sets" [value]="s['setId'] || s['id'] || s['set_id']">{{ s['setName'] || s['name'] || s['set_name'] }}</option>
+            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.SET' | translate
+              }}</label>
+            <select formControlName="set"
+              class="mt-2 w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-4 py-3 text-sm text-white focus:border-[#857752]/50 transition-all outline-none appearance-none">
+              <option value="">-- {{ 'CARDS.CAT_ALL' | translate }} --</option>
+              <option *ngFor="let s of sets" [value]="s['setId'] || s['id'] || s['set_id']">{{ s['setName'] || s['name']
+                || s['set_name'] }}</option>
             </select>
           </div>
 
           <div>
-            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.TYPE' | translate }}</label>
+            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.TYPE' | translate
+              }}</label>
             <div class="mt-3 flex flex-wrap gap-2">
-              <button type="button" *ngFor="let t of typesOptions" (click)="toggleArrayValue('types', t)" class="rounded-xl border border-white/5 px-3 py-1.5 text-[10px] font-bold transition-all hover:bg-white/10" [ngClass]="isSelected('types', t) ? 'bg-[#857752] text-white' : 'bg-white/5 text-slate-300'">
+              <button type="button" *ngFor="let t of typesOptions" (click)="toggleArrayValue('types', t)"
+                class="rounded-xl border border-white/5 px-3 py-1.5 text-[10px] font-bold transition-all hover:bg-white/10"
+                [ngClass]="isSelected('types', t) ? 'bg-[#857752] text-white' : 'bg-white/5 text-slate-300'">
                 {{ t }}
               </button>
             </div>
           </div>
 
           <div>
-            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.COLOR' | translate }}</label>
+            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.COLOR' | translate
+              }}</label>
             <div class="mt-3 flex flex-wrap gap-2">
-              <button type="button" *ngFor="let col of colorsOptions" (click)="toggleArrayValue('colors', col)" class="rounded-xl border border-white/5 px-3 py-1.5 text-[10px] font-bold transition-all hover:bg-white/10" [ngClass]="isSelected('colors', col) ? 'bg-[#857752] text-white' : 'bg-white/5 text-slate-300'">
+              <button type="button" *ngFor="let col of colorsOptions" (click)="toggleArrayValue('colors', col)"
+                class="rounded-xl border border-white/5 px-3 py-1.5 text-[10px] font-bold transition-all hover:bg-white/10"
+                [ngClass]="isSelected('colors', col) ? 'bg-[#857752] text-white' : 'bg-white/5 text-slate-300'">
                 {{ col }}
               </button>
             </div>
           </div>
 
           <div>
-            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.RARITY' | translate }}</label>
+            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.RARITY' | translate
+              }}</label>
             <div class="mt-3 flex flex-wrap gap-2">
-              <button type="button" *ngFor="let r of rarityOptions" (click)="toggleArrayValue('rarity', r)" class="rounded-xl border border-white/5 px-3 py-1.5 text-[10px] font-bold transition-all hover:bg-white/10" [ngClass]="isSelected('rarity', r) ? 'bg-[#857752] text-white' : 'bg-white/5 text-slate-300'">
+              <button type="button" *ngFor="let r of rarityOptions" (click)="toggleArrayValue('rarity', r)"
+                class="rounded-xl border border-white/5 px-3 py-1.5 text-[10px] font-bold transition-all hover:bg-white/10"
+                [ngClass]="isSelected('rarity', r) ? 'bg-[#857752] text-white' : 'bg-white/5 text-slate-300'">
                 {{ r }}
               </button>
             </div>
           </div>
 
           <div>
-            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.COST' | translate }}</label>
+            <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.COST' | translate
+              }}</label>
             <div class="mt-3 flex flex-wrap gap-2">
-              <button type="button" *ngFor="let cost of costsList" (click)="toggleArrayValue('costs', cost)" class="rounded-xl border border-white/5 px-3 py-1.5 text-[10px] font-bold transition-all hover:bg-white/10" [ngClass]="isSelected('costs', cost) ? 'bg-[#857752] text-white' : 'bg-white/5 text-slate-300'">
+              <button type="button" *ngFor="let cost of costsList" (click)="toggleArrayValue('costs', cost)"
+                class="rounded-xl border border-white/5 px-3 py-1.5 text-[10px] font-bold transition-all hover:bg-white/10"
+                [ngClass]="isSelected('costs', cost) ? 'bg-[#857752] text-white' : 'bg-white/5 text-slate-300'">
                 {{ cost }}
               </button>
             </div>
           </div>
           <div class="space-y-6">
             <div class="flex items-center justify-between">
-              <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.POWER' | translate }}</label>
+              <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.POWER' |
+                translate }}</label>
               <div class="flex gap-2">
-                <span class="px-2 py-0.5 rounded bg-[#857752]/20 border border-[#857752]/30 text-[10px] font-black text-[#857752]">
+                <span
+                  class="px-2 py-0.5 rounded bg-[#857752]/20 border border-[#857752]/30 text-[10px] font-black text-[#857752]">
                   {{ (filters.get('powerMin')?.value || 0) / 1000 }}k
                 </span>
                 <span class="text-slate-600">-</span>
-                <span class="px-2 py-0.5 rounded bg-[#857752]/20 border border-[#857752]/30 text-[10px] font-black text-[#857752]">
+                <span
+                  class="px-2 py-0.5 rounded bg-[#857752]/20 border border-[#857752]/30 text-[10px] font-black text-[#857752]">
                   {{ (filters.get('powerMax')?.value || 13000) / 1000 }}k
                 </span>
               </div>
             </div>
-            
+
             <div class="rounded-2xl border border-white/5 bg-[#0b0d2a]/50 p-6 space-y-6 shadow-inner relative">
               <!-- Slider Min -->
               <div class="space-y-2">
@@ -94,7 +112,8 @@
                   <span>{{ 'CARDS.CLEAR_FILTERS' | translate }}</span>
                   <span>{{ filters.get('powerMin')?.value }}</span>
                 </div>
-                <input formControlName="powerMin" type="range" min="0" max="13000" step="1000" class="w-full accent-[#857752] h-1.5" />
+                <input formControlName="powerMin" type="range" min="0" max="13000" step="1000"
+                  class="w-full accent-[#857752] h-1.5" />
               </div>
 
               <!-- Slider Max -->
@@ -103,7 +122,8 @@
                   <span>{{ 'CARDS.CLEAR_FILTERS' | translate }}</span>
                   <span>{{ filters.get('powerMax')?.value }}</span>
                 </div>
-                <input formControlName="powerMax" type="range" min="0" max="13000" step="1000" class="w-full accent-[#857752] h-1.5" />
+                <input formControlName="powerMax" type="range" min="0" max="13000" step="1000"
+                  class="w-full accent-[#857752] h-1.5" />
               </div>
 
               <div class="flex items-center justify-between mt-2">
@@ -115,7 +135,9 @@
         </div>
 
         <div class="pt-6">
-          <button type="submit" class="w-full rounded-2xl bg-[#857752] py-4 text-sm font-black text-white shadow-xl shadow-[#857752]/20 hover:bg-[#a3946b] transition-all active:scale-95">⚓ {{ 'CARDS.FILTERS' | translate }}</button>
+          <button type="submit"
+            class="w-full rounded-2xl bg-[#857752] py-4 text-sm font-black text-white shadow-xl shadow-[#857752]/20 hover:bg-[#a3946b] transition-all active:scale-95">⚓
+            {{ 'CARDS.FILTERS' | translate }}</button>
         </div>
       </form>
     </aside>
@@ -123,46 +145,61 @@
     <main class="self-start space-y-8">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-4">
         <div class="space-y-1">
-          <p class="text-[10px] font-black text-[#857752] uppercase tracking-[0.2em]">{{ 'CARDS.RESULTS' | translate }}</p>
-          <p class="text-2xl font-black text-white">{{ cards.length }} <span class="text-slate-500 font-medium text-sm">{{ 'CARDS.RESULTS' | translate }}</span></p>
+          <p class="text-[10px] font-black text-[#857752] uppercase tracking-[0.2em]">{{ 'CARDS.RESULTS' | translate }}
+          </p>
+          <p class="text-2xl font-black text-white">{{ cards.length }} <span
+              class="text-slate-500 font-medium text-sm">{{ 'CARDS.RESULTS' | translate }}</span></p>
         </div>
-        <a routerLink="/cards/leaders" class="group flex items-center gap-4 rounded-2xl bg-white/5 border border-white/10 px-8 py-4 text-sm font-black text-[#857752] transition-all hover:bg-white/10 hover:border-[#857752]/40 active:scale-95 shadow-xl">
+        <a routerLink="/cards/leaders"
+          class="group flex items-center gap-4 rounded-2xl bg-white/5 border border-white/10 px-8 py-4 text-sm font-black text-[#857752] transition-all hover:bg-white/10 hover:border-[#857752]/40 active:scale-95 shadow-xl">
           <span class="text-xl">👑</span>
-          <span>{{ 'CARDS.VIEW_ALL' | translate }}</span>
+          <span>{{ 'CARDS.VIEW_ALL_LEADERS' | translate }}</span>
         </a>
       </div>
 
-      <div *ngIf="error" class="mx-4 rounded-3xl border border-rose-500/20 bg-rose-500/5 px-6 py-4 text-sm text-rose-200 animate-in fade-in slide-in-from-top-2">{{ error }}</div>
-      
+      <div *ngIf="error"
+        class="mx-4 rounded-3xl border border-rose-500/20 bg-rose-500/5 px-6 py-4 text-sm text-rose-200 animate-in fade-in slide-in-from-top-2">
+        {{ error }}</div>
+
       <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 space-y-4">
         <div class="h-12 w-12 rounded-full border-4 border-[#857752]/20 border-t-[#857752] animate-spin"></div>
-        <p class="text-[10px] font-black text-[#857752] uppercase tracking-[0.3em]">{{ 'CARDS.LOADING' | translate }}</p>
+        <p class="text-[10px] font-black text-[#857752] uppercase tracking-[0.3em]">{{ 'CARDS.LOADING' | translate }}
+        </p>
       </div>
 
       <!-- Results Grid -->
-      <div *ngIf="!loading && pagedCards.length > 0" class="grid gap-8 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
-        <article *ngFor="let card of pagedCards" 
+      <div *ngIf="!loading && pagedCards.length > 0"
+        class="grid gap-8 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
+        <article *ngFor="let card of pagedCards"
           class="group relative overflow-hidden rounded-[2.5rem] bg-[#1d2269] border border-white/5 transition-all duration-500 hover:scale-[1.05] hover:border-[#857752]/50 hover:shadow-2xl">
           <div class="aspect-[3/4] p-4">
-             <img *ngIf="card.imageUrl" [src]="card.imageUrl" [alt]="card.name" class="h-full w-full rounded-[2rem] object-cover shadow-lg transition-transform duration-700 group-hover:scale-110">
-             <div class="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#1d2269] via-transparent to-transparent opacity-60"></div>
+            <img *ngIf="card.imageUrl" [src]="card.imageUrl" [alt]="card.name"
+              class="h-full w-full rounded-[2rem] object-cover shadow-lg transition-transform duration-700 group-hover:scale-110">
+            <div
+              class="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#1d2269] via-transparent to-transparent opacity-60">
+            </div>
           </div>
           <div class="p-8 pt-0 space-y-4">
-             <div class="space-y-1">
-                <h3 class="text-sm font-black text-white truncate leading-tight group-hover:text-[#857752] transition-colors">{{ card.name }}</h3>
-                <div class="flex items-center gap-2">
-                   <span class="text-[10px] font-bold text-[#857752] uppercase tracking-widest">{{ card.color }}</span>
-                   <span class="h-1 w-1 rounded-full bg-white/20"></span>
-                   <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ card.cardSetId }}</span>
-                </div>
-             </div>
-             <button type="button" (click)="openDetail(card)" class="w-full rounded-2xl bg-white/5 border border-white/10 py-3 text-xs font-black text-white hover:bg-[#857752] hover:border-[#857752] transition-all active:scale-95">{{ 'CARDS.VIEW_DETAILS' | translate }}</button>
+            <div class="space-y-1">
+              <h3
+                class="text-sm font-black text-white truncate leading-tight group-hover:text-[#857752] transition-colors">
+                {{ card.name }}</h3>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold text-[#857752] uppercase tracking-widest">{{ card.color }}</span>
+                <span class="h-1 w-1 rounded-full bg-white/20"></span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ card.cardSetId }}</span>
+              </div>
+            </div>
+            <button type="button" (click)="openDetail(card)"
+              class="w-full rounded-2xl bg-white/5 border border-white/10 py-3 text-xs font-black text-white hover:bg-[#857752] hover:border-[#857752] transition-all active:scale-95">{{
+              'CARDS.VIEW_DETAILS' | translate }}</button>
           </div>
         </article>
       </div>
 
       <!-- Empty State -->
-      <div *ngIf="!loading && cards.length === 0" class="text-center py-20 bg-[#1d2269]/30 rounded-[2rem] border border-white/5 mx-4">
+      <div *ngIf="!loading && cards.length === 0"
+        class="text-center py-20 bg-[#1d2269]/30 rounded-[2rem] border border-white/5 mx-4">
         <span class="text-6xl mb-4 block">🔍</span>
         <p class="text-slate-400 font-medium">{{ 'CARDS.NO_RESULTS' | translate }}</p>
       </div>
@@ -170,54 +207,70 @@
       <!-- Pagination -->
       <div *ngIf="!loading && totalPages > 1" class="flex justify-center items-center gap-4 pt-10 pb-20">
         <div class="inline-flex items-center gap-2 rounded-3xl border border-white/10 bg-[#1d2269] p-2 shadow-2xl">
-          <button (click)="goToPage(1)" [disabled]="currentPage === 1" class="flex h-12 w-12 items-center justify-center rounded-2xl transition-all hover:bg-white/5 disabled:opacity-30 disabled:pointer-events-none">⏮</button>
-          <button (click)="prevPage()" [disabled]="currentPage === 1" class="flex h-12 w-12 items-center justify-center rounded-2xl transition-all hover:bg-white/5 disabled:opacity-30 disabled:pointer-events-none">◀</button>
-          
+          <button (click)="goToPage(1)" [disabled]="currentPage === 1"
+            class="flex h-12 w-12 items-center justify-center rounded-2xl transition-all hover:bg-white/5 disabled:opacity-30 disabled:pointer-events-none">⏮</button>
+          <button (click)="prevPage()" [disabled]="currentPage === 1"
+            class="flex h-12 w-12 items-center justify-center rounded-2xl transition-all hover:bg-white/5 disabled:opacity-30 disabled:pointer-events-none">◀</button>
+
           <div class="flex items-center gap-1">
             <ng-container *ngFor="let page of visiblePageNumbers">
-              <button (click)="goToPage(page)" 
-                [class.bg-[#857752]]="page === currentPage"
-                [class.text-white]="page === currentPage"
-                [class.bg-transparent]="page !== currentPage"
+              <button (click)="goToPage(page)" [class.bg-[#857752]]="page === currentPage"
+                [class.text-white]="page === currentPage" [class.bg-transparent]="page !== currentPage"
                 class="flex h-12 w-12 items-center justify-center rounded-2xl text-sm font-bold transition-all hover:bg-white/5">
                 {{ page }}
               </button>
             </ng-container>
           </div>
 
-          <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="flex h-12 w-12 items-center justify-center rounded-2xl transition-all hover:bg-white/5 disabled:opacity-30 disabled:pointer-events-none">▶</button>
-          <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages" class="flex h-12 w-12 items-center justify-center rounded-2xl transition-all hover:bg-white/5 disabled:opacity-30 disabled:pointer-events-none">⏭</button>
+          <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+            class="flex h-12 w-12 items-center justify-center rounded-2xl transition-all hover:bg-white/5 disabled:opacity-30 disabled:pointer-events-none">▶</button>
+          <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
+            class="flex h-12 w-12 items-center justify-center rounded-2xl transition-all hover:bg-white/5 disabled:opacity-30 disabled:pointer-events-none">⏭</button>
         </div>
       </div>
     </main>
   </div>
 
   <!-- Card Detail Modal -->
-  <div *ngIf="detailOpen" class="fixed inset-0 z-[200] flex items-center justify-center bg-[#0b0d2a]/90 backdrop-blur-md p-4 animate-in fade-in duration-300" (click)="closeDetail()">
-    <div class="flex h-[calc(100vh-4rem)] w-full max-w-6xl flex-col overflow-hidden rounded-[3rem] border border-[#857752]/30 bg-[#1d2269] shadow-[0_40px_100px_rgba(0,0,0,0.8)]" (click)="$event.stopPropagation()">
+  <div *ngIf="detailOpen"
+    class="fixed inset-0 z-[200] flex items-center justify-center bg-[#0b0d2a]/90 backdrop-blur-md p-4 animate-in fade-in duration-300"
+    (click)="closeDetail()">
+    <div
+      class="flex h-[calc(100vh-4rem)] w-full max-w-6xl flex-col overflow-hidden rounded-[3rem] border border-[#857752]/30 bg-[#1d2269] shadow-[0_40px_100px_rgba(0,0,0,0.8)]"
+      (click)="$event.stopPropagation()">
       <header class="flex flex-shrink-0 items-center justify-between gap-4 bg-[#0b0d2a]/30 p-5 lg:px-8">
         <div class="min-w-0 space-y-1">
-          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#857752]">{{ 'CARDS.VIEW_DETAILS' | translate }}</p>
-          <h2 class="truncate text-3xl font-black text-white tracking-tight">{{ activeDetailSlide?.name || detailCard?.name }}</h2>
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#857752]">{{ 'CARDS.VIEW_DETAILS' |
+            translate }}</p>
+          <h2 class="truncate text-3xl font-black text-white tracking-tight">{{ activeDetailSlide?.name ||
+            detailCard?.name }}</h2>
         </div>
-        <button type="button" (click)="closeDetail()" class="h-14 w-14 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all active:scale-90">✕</button>
+        <button type="button" (click)="closeDetail()"
+          class="h-14 w-14 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all active:scale-90">✕</button>
       </header>
 
-      <div *ngIf="detailCard" class="grid min-h-0 flex-1 gap-6 p-5 lg:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] overflow-y-auto custom-scrollbar">
+      <div *ngIf="detailCard"
+        class="grid min-h-0 flex-1 gap-6 p-5 lg:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] overflow-y-auto custom-scrollbar">
         <!-- Columna Izquierda -->
         <div class="flex flex-col gap-6">
-          <div class="relative flex aspect-[3/4] items-center justify-center rounded-[2.5rem] border border-white/5 bg-[#0b0d2a] p-3 shadow-inner gold-glow">
-            <img [src]="activeImageSrc" (error)="onImageError()" [alt]="detailCard.name" class="max-h-full w-full rounded-[1.5rem] object-contain shadow-2xl">
-            <div *ngIf="detailLoading" class="absolute inset-0 flex items-center justify-center bg-[#1d2269]/80 rounded-[2.5rem]">
+          <div
+            class="relative flex aspect-[3/4] items-center justify-center rounded-[2.5rem] border border-white/5 bg-[#0b0d2a] p-3 shadow-inner gold-glow">
+            <img [src]="activeImageSrc" (error)="onImageError()" [alt]="detailCard.name"
+              class="max-h-full w-full rounded-[1.5rem] object-contain shadow-2xl">
+            <div *ngIf="detailLoading"
+              class="absolute inset-0 flex items-center justify-center bg-[#1d2269]/80 rounded-[2.5rem]">
               <div class="h-12 w-12 animate-spin rounded-full border-4 border-[#857752] border-t-transparent"></div>
             </div>
           </div>
 
           <!-- Versions -->
           <div *ngIf="detailSlides.length > 1" class="space-y-3">
-            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ 'CARDS.TITLE' | translate }}</p>
+            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ 'CARDS.TITLE' | translate }}
+            </p>
             <div class="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
-              <button *ngFor="let slide of detailSlides; let i = index" (click)="selectDetailIndex(i)" class="relative h-20 w-14 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-300 hover:scale-105" [ngClass]="i === detailImageIndex ? 'border-[#857752]' : 'border-white/5'">
+              <button *ngFor="let slide of detailSlides; let i = index" (click)="selectDetailIndex(i)"
+                class="relative h-20 w-14 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-300 hover:scale-105"
+                [ngClass]="i === detailImageIndex ? 'border-[#857752]' : 'border-white/5'">
                 <img [src]="getThumbnailSrc(i)" class="h-full w-full object-cover" [alt]="detailCard.name">
                 <div *ngIf="i === detailImageIndex" class="absolute inset-0 bg-[#857752]/20"></div>
               </button>
@@ -228,25 +281,32 @@
         <!-- Columna Derecha -->
         <div class="flex flex-col gap-4">
           <div class="flex items-center justify-between">
-             <div class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-slate-400 tracking-widest uppercase">SET: {{ detailCard.cardSetId || detailCard.id }}</div>
-             <span class="rounded-lg bg-[#857752]/20 border border-[#857752]/30 px-3 py-1 text-xs font-black text-[#857752] uppercase tracking-widest">{{ activeDetailSlide?.rarity }}</span>
+            <div
+              class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-slate-400 tracking-widest uppercase">
+              SET: {{ detailCard.cardSetId || detailCard.id }}</div>
+            <span
+              class="rounded-lg bg-[#857752]/20 border border-[#857752]/30 px-3 py-1 text-xs font-black text-[#857752] uppercase tracking-widest">{{
+              activeDetailSlide?.rarity }}</span>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
-             <div *ngFor="let item of [
+            <div *ngFor="let item of [
                {l: 'CARDS.TYPE', v: detailCard.type},
                {l: 'CARDS.COLOR', v: detailCard.color},
                {l: 'CARDS.COST', v: detailCard.cost},
                {l: 'CARDS.POWER', v: detailCard.power},
-               {l: 'Vida', v: detailCard.life},
-               {l: 'Atributo', v: detailCard.attribute}
+               {l: 'CARDS.LIFE', v: detailCard.life},
+               {l: 'CARDS.ATTRIBUTE', v: detailCard.attribute}
              ]" class="rounded-[1.5rem] bg-[#0b0d2a]/40 border border-white/5 p-4 space-y-0.5">
-               <span class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ item.l | translate }}</span>
-               <p class="text-lg font-bold text-white">{{ item.v || '-' }}</p>
-             </div>
+              <span class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ item.l | translate
+                }}</span>
+              <p class="text-lg font-bold text-white">{{ item.v || '-' }}</p>
+            </div>
           </div>
 
-          <div *ngIf="detailCard.text" class="rounded-[1.5rem] border border-[#857752]/20 bg-[#0b0d2a]/30 p-5 text-sm leading-relaxed text-slate-200 italic shadow-inner">{{ detailCard.text }}</div>
+          <div *ngIf="detailCard.text"
+            class="rounded-[1.5rem] border border-[#857752]/20 bg-[#0b0d2a]/30 p-5 text-sm leading-relaxed text-slate-200 italic shadow-inner">
+            {{ detailCard.text }}</div>
         </div>
       </div>
     </div>

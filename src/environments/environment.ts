@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:8085/api'
+  apiBaseUrl: 'https://log-pose-back-production.up.railway.app/api'
 };
