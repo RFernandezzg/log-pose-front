@@ -1,0 +1,182 @@
+<div class="min-h-screen bg-[#0b0d2a] text-white font-sans relative">
+  <!-- Header Shop -->
+  <div class="bg-[#1d2269] border-b border-[#857752]/30 py-8 px-6 shadow-xl relative overflow-hidden">
+    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+    <div class="max-w-[1400px] mx-auto relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div>
+        <h1 class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#d4c59a] to-[#857752] uppercase tracking-widest mb-2">
+          {{ 'SHOP.TITLE' | translate }}
+        </h1>
+        <p class="text-slate-300 font-medium max-w-xl">{{ 'SHOP.SUBTITLE' | translate }}</p>
+      </div>
+      
+      <!-- Cart Toggle Button -->
+      <button (click)="toggleCart()" 
+              class="relative flex items-center gap-3 bg-[#857752]/20 hover:bg-[#857752]/40 border border-[#857752]/50 px-6 py-3 rounded-2xl transition-all shadow-lg group">
+        <span class="text-2xl group-hover:scale-110 transition-transform">🛒</span>
+        <span class="font-bold text-[#d4c59a]">{{ 'SHOP.VIEW_CART' | translate }}</span>
+        <span *ngIf="cartService.getTotalItemsCount() > 0" 
+              class="absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-black h-6 w-6 flex items-center justify-center rounded-full shadow-lg border-2 border-[#1d2269]">
+          {{ cartService.getTotalItemsCount() }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="max-w-[1400px] mx-auto p-6 flex flex-col lg:flex-row gap-8">
+    
+    <!-- Sidebar Filters -->
+    <aside class="w-full lg:w-64 flex-shrink-0 space-y-6">
+      <div class="bg-[#1d2269]/50 rounded-[2rem] p-6 border border-white/5 backdrop-blur-sm sticky top-6">
+        <h3 class="text-[#857752] font-black uppercase tracking-widest text-sm mb-4">{{ 'SHOP.SEARCH_PLACEHOLDER' | translate }}</h3>
+        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()"
+               [placeholder]="'SHOP.SEARCH_PLACEHOLDER' | translate" 
+               class="w-full bg-[#0b0d2a] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#857752] transition-colors mb-6">
+        
+        <h3 class="text-[#857752] font-black uppercase tracking-widest text-sm mb-4">{{ 'SHOP.CATEGORIES' | translate }}</h3>
+        <ul class="space-y-2">
+          <li *ngFor="let cat of categories">
+            <button (click)="setCategory(cat)"
+                    class="w-full text-left px-4 py-3 rounded-xl transition-all font-semibold text-sm flex justify-between items-center"
+                    [ngClass]="activeCategory === cat ? 'bg-[#857752] text-white shadow-lg' : 'hover:bg-white/5 text-slate-400 hover:text-white'">
+              {{ getCategoryLabel(cat) | translate }}
+              <span *ngIf="activeCategory === cat" class="text-xs">✔️</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Product Grid -->
+    <main class="flex-1 min-w-0">
+      <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+        <div class="text-center space-y-4">
+          <div class="h-12 w-12 rounded-full border-4 border-[#857752]/20 border-t-[#857752] animate-spin mx-auto"></div>
+          <p class="text-[10px] font-black text-[#857752] uppercase tracking-[0.3em]">{{ 'SHOP.LOADING' | translate }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="error && !isLoading" class="rounded-3xl border border-rose-500/20 bg-rose-500/5 px-6 py-4 text-sm text-rose-200 mb-6">
+        {{ error }}
+      </div>
+
+      <div *ngIf="!isLoading && filteredItems.length === 0" class="text-center py-20 bg-[#1d2269]/30 rounded-[2rem] border border-white/5">
+        <span class="text-6xl mb-4 block">🔍</span>
+        <p class="text-slate-400 font-medium">{{ 'SHOP.NO_ITEMS' | translate }}</p>
+      </div>
+
+      <div *ngIf="!isLoading && filteredItems.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div *ngFor="let item of filteredItems" 
+             class="group bg-[#1d2269]/40 rounded-[2rem] border border-white/5 overflow-hidden hover:border-[#857752]/50 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex flex-col">
+          
+          <div class="aspect-square bg-black/40 relative overflow-hidden flex items-center justify-center p-6">
+            <img [src]="item.imageUrl" [alt]="item.name" class="max-w-full max-h-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-500">
+            <div *ngIf="item.stock <= 0" class="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
+              <span class="bg-rose-600 text-white font-black px-4 py-2 rounded-xl rotate-12 text-lg uppercase tracking-widest border-2 border-rose-800 shadow-2xl">{{ 'SHOP.OUT_OF_STOCK' | translate }}</span>
+            </div>
+            <!-- Category Badge -->
+            <span class="absolute top-4 left-4 bg-[#0b0d2a]/80 backdrop-blur-md border border-[#857752]/40 text-[#d4c59a] text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg shadow-lg">
+              {{ getCategoryLabel(item.category) | translate }}
+            </span>
+          </div>
+
+          <div class="p-6 flex flex-col flex-1">
+            <h3 class="text-xl font-bold text-white mb-2 line-clamp-2 leading-tight">{{ item.name }}</h3>
+            <p class="text-sm text-slate-400 mb-4 line-clamp-2 flex-1">{{ item.description }}</p>
+            
+            <div class="flex items-end justify-between mt-auto">
+              <div>
+                <p class="text-[10px] text-[#857752] font-black uppercase tracking-widest mb-1">{{ 'SHOP.PRICE' | translate }}</p>
+                <p class="text-2xl font-black text-white">{{ item.price | number:'1.2-2' }} €</p>
+              </div>
+              <button (click)="addToCart(item)" [disabled]="item.stock <= 0"
+                      class="bg-[#857752] hover:bg-[#a3946b] text-white font-bold h-12 w-12 rounded-2xl flex items-center justify-center shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-1">
+                +🛒
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Shopping Cart Sidebar Overlay -->
+  <div *ngIf="isCartOpen" class="fixed inset-0 z-50 overflow-hidden">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" (click)="toggleCart()"></div>
+    
+    <!-- Sidebar -->
+    <div class="absolute inset-y-0 right-0 w-full md:w-[450px] bg-[#1d2269] shadow-2xl flex flex-col border-l border-[#857752]/30 animate-in slide-in-from-right duration-300">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between p-6 border-b border-white/10 bg-[#0b0d2a]/50">
+        <h2 class="text-2xl font-black text-[#d4c59a] flex items-center gap-3">
+          🛒 {{ 'SHOP.CART.TITLE' | translate }}
+          <span class="bg-[#857752] text-white text-xs px-2 py-1 rounded-lg">{{ cartService.getTotalItemsCount() }}</span>
+        </h2>
+        <button (click)="toggleCart()" class="text-slate-400 hover:text-white h-10 w-10 flex items-center justify-center rounded-xl hover:bg-white/10 transition-colors">✕</button>
+      </div>
+
+      <!-- Success Checkout Message -->
+      <div *ngIf="checkoutSuccess" class="flex-1 flex items-center justify-center p-8 bg-green-900/20 text-center flex-col gap-4">
+        <span class="text-7xl">🎉</span>
+        <h3 class="text-2xl font-black text-green-400">{{ 'SHOP.CART.CHECKOUT_SUCCESS' | translate }}</h3>
+        <p class="text-green-200/70 text-sm">{{ 'SHOP.CART.CHECKOUT_SUCCESS_SUB' | translate }}</p>
+        <button (click)="checkoutSuccess = false; isCartOpen = false" class="mt-4 bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-xl font-bold transition-colors">{{ 'SHOP.CART.BACK_TO_SHOP' | translate }}</button>
+      </div>
+
+      <!-- Empty Cart -->
+      <div *ngIf="cartItems.length === 0 && !checkoutSuccess" class="flex-1 flex flex-col items-center justify-center p-8 text-center opacity-70">
+        <span class="text-6xl mb-4">🛍️</span>
+        <p class="text-lg font-bold text-white mb-2">{{ 'SHOP.CART.EMPTY' | translate }}</p>
+        <p class="text-sm text-slate-400">{{ 'SHOP.CART.EMPTY_SUB' | translate }}</p>
+        <button (click)="toggleCart()" class="mt-6 border border-[#857752] text-[#857752] px-6 py-2 rounded-xl font-bold hover:bg-[#857752] hover:text-white transition-all">{{ 'SHOP.CART.KEEP_SHOPPING' | translate }}</button>
+      </div>
+
+      <!-- Cart Items -->
+      <div *ngIf="cartItems.length > 0 && !checkoutSuccess" class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4 bg-[#0b0d2a]/30">
+        <div *ngFor="let cItem of cartItems" class="bg-[#1d2269] rounded-2xl border border-white/5 p-3 flex gap-4 shadow-lg relative pr-10">
+          <!-- Remove Button -->
+          <button (click)="removeFromCart(cItem.item.id)" class="absolute top-2 right-2 text-rose-500 hover:text-rose-400 hover:bg-rose-500/10 h-8 w-8 rounded-lg flex items-center justify-center transition-colors">✕</button>
+          
+          <div class="w-20 h-20 bg-black/40 rounded-xl p-2 flex items-center justify-center flex-shrink-0">
+            <img [src]="cItem.item.imageUrl" [alt]="cItem.item.name" class="max-w-full max-h-full object-contain">
+          </div>
+          
+          <div class="flex-1 flex flex-col justify-center min-w-0">
+            <h4 class="font-bold text-sm text-white truncate mb-1 pr-6">{{ cItem.item.name }}</h4>
+            <p class="text-[#d4c59a] font-black mb-3">{{ cItem.item.price | number:'1.2-2' }} €</p>
+            
+            <!-- Quantity controls -->
+            <div class="flex items-center gap-3 bg-[#0b0d2a] w-fit rounded-lg border border-white/10">
+              <button (click)="updateQuantity(cItem.item.id, cItem.quantity - 1)" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 rounded-l-lg transition-colors">-</button>
+              <span class="text-sm font-bold w-6 text-center">{{ cItem.quantity }}</span>
+              <button (click)="updateQuantity(cItem.item.id, cItem.quantity + 1)" [disabled]="cItem.quantity >= cItem.item.stock" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 rounded-r-lg transition-colors disabled:opacity-50">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer / Checkout -->
+      <div *ngIf="cartItems.length > 0 && !checkoutSuccess" class="p-6 border-t border-[#857752]/30 bg-[#1d2269]">
+        <div class="flex justify-between items-end mb-6">
+          <span class="text-slate-400 font-medium">{{ 'SHOP.CART.TOTAL' | translate }}</span>
+          <span class="text-3xl font-black text-white">{{ cartService.getTotalPrice() | number:'1.2-2' }} €</span>
+        </div>
+        
+        <div *ngIf="error" class="mb-4 p-3 bg-rose-500/20 border border-rose-500/30 rounded-xl text-rose-300 text-xs font-medium">
+          {{ error }}
+        </div>
+
+        <button (click)="checkout()" [disabled]="isCheckingOut" 
+                class="w-full bg-[#857752] hover:bg-[#a3946b] text-white font-black py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70">
+          <span *ngIf="!isCheckingOut">{{ 'SHOP.CART.CHECKOUT' | translate }}</span>
+          <span *ngIf="isCheckingOut" class="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          <span *ngIf="isCheckingOut">{{ 'SHOP.CART.PROCESSING' | translate }}</span>
+        </button>
+        <p class="text-center text-[10px] text-slate-500 mt-3">{{ 'SHOP.CART.TFG_DISCLAIMER' | translate }}</p>
+      </div>
+
+    </div>
+  </div>
+</div>

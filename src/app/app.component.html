@@ -1,0 +1,128 @@
+<div class="min-h-screen bg-[#0b0d2a] text-slate-100">
+  <header class="sticky top-0 z-[100] border-b border-[#857752]/20 bg-[#1d2269]/90 backdrop-blur-md">
+    <div class="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-4 py-4 lg:px-6 xl:px-8">
+      <a routerLink="/" class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+        <span class="text-[#857752]">⚓</span> OPTCG Deck Builder
+      </a>
+
+      <nav class="flex items-center gap-3 text-sm">
+        <a routerLink="/" routerLinkActive="bg-[#857752] text-white" [routerLinkActiveOptions]="{exact: true}"
+          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">{{ 'NAV.HOME' | translate }}</a>
+        <a routerLink="/shop" routerLinkActive="bg-[#857752] text-white"
+          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium flex items-center gap-1">🛒 {{ 'NAV.SHOP' | translate }}</a>
+        <a routerLink="/cards" routerLinkActive="bg-[#857752] text-white"
+          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">{{ 'NAV.CARDS' | translate }}</a>
+
+        <!-- Dropdown Decks -->
+        <div class="relative group">
+          <button
+            class="flex items-center gap-1 rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">
+            {{ 'NAV.DECKS.TITLE' | translate }}
+            <svg xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <!-- Invisible bridge to keep hover state stable -->
+          <div class="absolute top-full left-0 w-full h-2 bg-transparent"></div>
+
+          <div
+            class="absolute left-0 top-[calc(100%+4px)] w-56 bg-[#1d2269] border border-[#857752]/30 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50 overflow-hidden backdrop-blur-xl">
+            <div class="py-2">
+              <a routerLink="/decks/explore"
+                class="flex items-center gap-3 px-5 py-3 text-slate-200 hover:bg-[#857752]/20 transition-colors">
+                <span class="text-xl">🌐</span>
+                <span class="font-medium">{{ 'NAV.DECKS.EXPLORE' | translate }}</span>
+              </a>
+              <a routerLink="/decks"
+                class="flex items-center gap-3 px-5 py-3 text-slate-200 hover:bg-[#857752]/20 transition-colors border-t border-white/5">
+                <span class="text-xl">🃏</span>
+                <span class="font-medium">{{ 'NAV.DECKS.MY_DECKS' | translate }}</span>
+              </a>
+              <a routerLink="/decks/build"
+                class="flex items-center gap-3 px-5 py-3 text-[#857752] hover:bg-[#857752]/10 transition-colors border-t border-white/5">
+                <span class="text-xl">⚒️</span>
+                <span class="font-bold">{{ 'NAV.DECKS.BUILDER' | translate }}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="h-6 w-px bg-white/10 mx-2"></div>
+
+        <!-- Selector de Idioma -->
+        <div class="relative">
+          <button (click)="showLangDropdown = !showLangDropdown"
+            class="flex items-center gap-2 rounded-full px-3 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium border border-[#857752]/20">
+            <span class="text-lg">{{ langService.getCurrentLang() === 'es' ? '🇪🇸' : '🇬🇧' }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-50" [ngClass]="{'rotate-180': showLangDropdown}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <div *ngIf="showLangDropdown"
+            class="absolute right-0 top-[calc(100%+8px)] w-32 bg-[#1d2269] border border-[#857752]/30 rounded-2xl shadow-2xl z-[110] overflow-hidden backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200">
+            <button (click)="setLanguage('es')"
+              class="w-full flex items-center gap-3 px-4 py-3 text-slate-200 hover:bg-[#857752]/20 transition-colors text-left"
+              [ngClass]="{'bg-[#857752]/10': langService.getCurrentLang() === 'es'}">
+              <span class="text-xl">🇪🇸</span>
+              <span class="font-medium">Español</span>
+            </button>
+            <button (click)="setLanguage('en')"
+              class="w-full flex items-center gap-3 px-4 py-3 text-slate-200 hover:bg-[#857752]/20 transition-colors text-left border-t border-white/5"
+              [ngClass]="{'bg-[#857752]/10': langService.getCurrentLang() === 'en'}">
+              <span class="text-xl">🇬🇧</span>
+              <span class="font-medium">English</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="h-6 w-px bg-white/10 mx-2"></div>
+
+        <a *ngIf="!session.isAuthenticated()" routerLink="/auth/login" [queryParams]="{ returnUrl: router.url }"
+          class="rounded-full bg-[#857752] px-6 py-2.5 font-bold text-white hover:bg-[#a3946b] shadow-lg shadow-[#857752]/20 transition-all active:scale-95 text-sm">
+          {{ 'NAV.LOGIN' | translate }}
+        </a>
+        <!-- Dropdown Perfil -->
+        <div *ngIf="session.isAuthenticated()" class="relative group">
+          <button
+            class="flex items-center gap-2 rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium border border-transparent hover:border-[#857752]/30">
+            <img *ngIf="session.user?.avatarUrl" [src]="session.user?.avatarUrl" alt="Avatar" class="h-6 w-6 rounded-full object-cover border border-[#857752]/50 shadow-sm" />
+            <span *ngIf="!session.user?.avatarUrl" class="text-xl">👤</span>
+            {{ session.user?.username || 'Perfil' }}
+            <svg xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <!-- Invisible bridge to keep hover state stable -->
+          <div class="absolute top-full left-0 w-full h-2 bg-transparent"></div>
+
+          <div
+            class="absolute right-0 top-[calc(100%+4px)] w-48 bg-[#1d2269] border border-[#857752]/30 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50 overflow-hidden backdrop-blur-xl">
+            <div class="py-2">
+              <a routerLink="/profile"
+                class="flex items-center gap-3 px-5 py-3 text-slate-200 hover:bg-[#857752]/20 transition-colors">
+                <span class="text-xl">⚙️</span>
+                <span class="font-medium">{{ 'NAV.PROFILE' | translate }}</span>
+              </a>
+              <button type="button" (click)="logout()"
+                class="w-full flex items-center gap-3 px-5 py-3 text-rose-300 hover:bg-rose-500/20 transition-colors border-t border-white/5 text-left">
+                <span class="text-xl">🚪</span>
+                <span class="font-bold">{{ 'NAV.LOGOUT' | translate }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto w-full max-w-screen-2xl px-4 py-8 lg:px-6 xl:px-8">
+    <router-outlet></router-outlet>
+  </main>
+</div>

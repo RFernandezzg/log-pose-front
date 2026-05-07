@@ -1,0 +1,77 @@
+<section class="space-y-10 pb-20">
+  <header class="flex items-end justify-between border-b border-[#857752]/20 pb-8">
+    <div class="space-y-2">
+      <div
+        class="inline-flex items-center gap-2 rounded-full bg-[#857752]/10 px-3 py-1 text-[10px] font-black tracking-widest text-[#857752] uppercase">
+        {{ 'NAV.DECKS.TITLE' | translate }}
+      </div>
+      <h1 class="text-4xl font-black text-white tracking-tight">{{ 'DECKS.MY_DECKS.TITLE' | translate }}</h1>
+      <p class="text-sm text-slate-400 font-medium">{{ 'DECKS.MY_DECKS.SUBTITLE' | translate }}</p>
+    </div>
+    <button (click)="navigateToBuild()"
+      class="hidden lg:flex items-center gap-3 rounded-2xl bg-[#857752] px-8 py-4 text-sm font-black text-white shadow-xl shadow-[#857752]/20 hover:bg-[#a3946b] transition-all active:scale-95">
+      <span class="text-xl">⚓</span>
+      {{ 'DECKS.MY_DECKS.CREATE_NEW' | translate }}
+    </button>
+  </header>
+
+  <!-- Mobile Create Button -->
+  <button (click)="navigateToBuild()"
+    class="flex lg:hidden w-full items-center justify-center gap-3 rounded-2xl bg-[#857752] px-8 py-4 text-sm font-black text-white shadow-xl shadow-[#857752]/20 active:scale-95">
+    <span class="text-xl">⚓</span>
+    {{ 'DECKS.MY_DECKS.CREATE_NEW' | translate }}
+  </button>
+
+  <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-20 space-y-4">
+    <div class="h-12 w-12 rounded-full border-4 border-[#857752]/20 border-t-[#857752] animate-spin"></div>
+    <p class="text-[10px] font-black text-[#857752] uppercase tracking-[0.3em]">{{ 'DECKS.EXPLORE.LOADING' | translate }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && myDecks.length === 0"
+    class="flex flex-col items-center justify-center rounded-[3rem] border border-white/5 bg-[#1d2269]/30 py-24 text-center">
+    <span class="text-7xl mb-6">🏝️</span>
+    <h3 class="text-2xl font-black text-white mb-2">{{ 'DECKS.MY_DECKS.NO_DECKS' | translate }}</h3>
+    <p class="text-slate-400 font-medium mb-8">¡Es hora de empezar a construir tu flota legendaria!</p>
+    <button (click)="navigateToBuild()" class="rounded-2xl border border-[#857752] px-8 py-3 text-sm font-black text-[#857752] hover:bg-[#857752] hover:text-white transition-all">
+      {{ 'DECKS.MY_DECKS.CREATE_NEW' | translate }}
+    </button>
+  </div>
+
+  <div *ngIf="!isLoading && myDecks.length > 0" class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <article *ngFor="let deck of myDecks"
+      class="group relative overflow-hidden rounded-[2.5rem] bg-[#1d2269] border border-white/5 transition-all duration-500 hover:scale-[1.03]"
+      [ngClass]="getBorderColorClass(deck.leaderCardId)">
+      
+      <div class="absolute top-6 right-6 z-10">
+        <span class="rounded-full px-3 py-1 text-[8px] font-black uppercase tracking-widest backdrop-blur-md border"
+          [ngClass]="deck.isPublic ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-slate-500/10 border-slate-500/30 text-slate-400'">
+          {{ deck.isPublic ? ('DECKS.MY_DECKS.PUBLIC' | translate) : ('DECKS.MY_DECKS.PRIVATE' | translate) }}
+        </span>
+      </div>
+
+      <div class="aspect-[3/4] overflow-hidden p-4 cursor-pointer" (click)="viewDeck(deck.id)">
+        <img *ngIf="getLeaderImage(deck.leaderCardId)" [src]="getLeaderImage(deck.leaderCardId)" [alt]="deck.name"
+          class="h-full w-full rounded-[2rem] object-cover transition-all duration-700 group-hover:scale-110">
+        <div class="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#1d2269] via-transparent to-transparent opacity-60"></div>
+      </div>
+
+      <div class="p-8 pt-0 space-y-6">
+        <div class="space-y-1">
+          <h2 (click)="viewDeck(deck.id)" class="text-xl font-black text-white truncate leading-tight hover:text-[#857752] transition-colors cursor-pointer">{{ deck.name }}</h2>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ deck.createdAt | dateFormat }}</span>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <button (click)="viewDeck(deck.id)"
+            class="flex-1 rounded-xl bg-white/5 border border-white/10 py-3 text-[10px] font-black text-white hover:bg-[#857752] hover:border-[#857752] transition-all active:scale-95 uppercase">Info</button>
+          <button (click)="editDeck(deck.id)"
+            class="flex-1 rounded-xl bg-white/5 border border-white/10 py-3 text-[10px] font-black text-[#857752] hover:bg-[#857752]/20 transition-all active:scale-95 uppercase">{{ 'DECKS.MY_DECKS.EDIT' | translate }}</button>
+          <button (click)="deleteDeck(deck.id, deck.name)"
+            class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-3 text-[10px] font-black text-rose-500 hover:bg-rose-500 hover:text-white transition-all active:scale-95 uppercase">✕</button>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>

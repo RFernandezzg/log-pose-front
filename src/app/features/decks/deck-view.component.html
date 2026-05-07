@@ -1,0 +1,197 @@
+<section *ngIf="deck" class="space-y-10 pb-20 animate-in fade-in duration-700">
+  <!-- Header con gradiente dinámico -->
+  <header class="relative overflow-hidden rounded-[3rem] p-10 lg:p-16 shadow-2xl" [ngStyle]="getHeaderGradient()">
+    <div class="absolute inset-0 bg-gradient-to-br from-black/60 via-transparent to-black/40"></div>
+    <div class="absolute -right-20 -top-20 h-96 w-96 rounded-full bg-white/10 blur-[100px]"></div>
+    
+    <div class="relative flex flex-col lg:flex-row items-center gap-12">
+      <!-- Leader Profile -->
+      <div class="group relative flex-shrink-0 cursor-pointer" (click)="openLeaderDetail()">
+        <div class="relative h-64 w-48 overflow-hidden rounded-[2rem] border-4 border-white/20 shadow-2xl transition-transform duration-500 group-hover:scale-105">
+          <img *ngIf="leaderCard" [src]="leaderCard.imageUrl" class="h-full w-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-6">
+            <span class="text-[10px] font-black text-white uppercase tracking-widest">Ver Detalles</span>
+          </div>
+        </div>
+        <div *ngIf="leaderCard" class="absolute -bottom-4 -right-4 rounded-2xl bg-[#857752] px-6 py-2 text-xs font-black text-white shadow-xl">
+          LÍDER
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="flex-1 text-center lg:text-left space-y-6">
+        <div class="space-y-3">
+          <div class="flex flex-wrap justify-center lg:justify-start items-center gap-4">
+             <span class="rounded-full bg-white/10 border border-white/20 px-4 py-1 text-[10px] font-black text-white uppercase tracking-widest">{{ deck.createdAt | dateFormat }}</span>
+             <span class="h-1.5 w-1.5 rounded-full bg-white/40"></span>
+             <span class="text-white/60 text-sm font-medium">{{ 'DECKS.EXPLORE.BY' | translate }} <span class="text-white font-black">{{ deck.username }}</span></span>
+          </div>
+          <h1 class="text-5xl lg:text-6xl font-black text-white tracking-tighter">{{ deck.name }}</h1>
+        </div>
+
+        <div class="flex flex-wrap justify-center lg:justify-start items-center gap-3">
+          <div class="flex items-center gap-2 rounded-2xl bg-white/10 border border-white/10 px-6 py-3">
+            <span class="text-2xl">🎴</span>
+            <span class="text-lg font-black text-white">{{ getTotalCards() }} <span class="text-xs text-white/50 uppercase ml-1">Cartas</span></span>
+          </div>
+          <button (click)="toggleLike()" 
+            [disabled]="!isAuthenticated"
+            class="flex items-center gap-3 rounded-2xl border px-6 py-3 transition-all active:scale-95 disabled:opacity-50"
+            [ngClass]="hasLiked ? 'bg-rose-500 border-rose-400 text-white shadow-lg shadow-rose-500/20' : 'bg-white/10 border-white/10 text-white hover:bg-white/20'">
+            <span class="text-xl">{{ hasLiked ? '❤️' : '🤍' }}</span>
+            <span class="font-black">{{ deck.likesCount || 0 }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col gap-3 w-full lg:w-64">
+        <!-- Botón Exportar (Dropdown) -->
+        <div class="relative" id="export-menu-container">
+          <button (click)="toggleExportMenu($event)"
+            class="w-full rounded-2xl bg-white text-[#1d2269] px-8 py-4 text-sm font-black shadow-2xl transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
+            <span>{{ 'DECKS.VIEW.EXPORT' | translate }}</span>
+            <span class="text-lg">📤</span>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div *ngIf="exportMenuOpen" 
+            class="absolute top-full left-0 right-0 mt-3 z-50 rounded-[2rem] bg-white border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden animate-in fade-in slide-in-from-top-4">
+            <button (click)="exportToText()" class="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-colors border-b border-slate-50 text-left">
+              <span class="text-sm font-black text-slate-700 uppercase tracking-wide">{{ 'DECKS.VIEW.EXPORT_TEXT' | translate }}</span>
+              <span class="text-lg">📄</span>
+            </button>
+            <button (click)="exportToImage()" [disabled]="exportingImage" class="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-colors border-b border-slate-50 text-left disabled:opacity-50">
+              <span class="text-sm font-black text-slate-700 uppercase tracking-wide">{{ exportingImage ? ('DECKS.BUILDER.SAVING' | translate) : ('DECKS.VIEW.EXPORT_IMAGE' | translate) }}</span>
+              <span class="text-lg">🖼️</span>
+            </button>
+            <button (click)="exportToPdf()" [disabled]="exportingPdf" class="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-colors text-left disabled:opacity-50">
+              <span class="text-sm font-black text-slate-700 uppercase tracking-wide">{{ exportingPdf ? ('DECKS.BUILDER.SAVING' | translate) : ('DECKS.VIEW.EXPORT_PDF' | translate) }}</span>
+              <span class="text-lg">📕</span>
+            </button>
+          </div>
+        </div>
+
+        <button *ngIf="isOwner" (click)="editDeck()" 
+          class="w-full rounded-2xl bg-white/10 border border-white/20 px-8 py-4 text-sm font-black text-white transition-all hover:bg-white/20 active:scale-95">
+          {{ 'DECKS.MY_DECKS.EDIT' | translate }}
+        </button>
+        <button *ngIf="isOwner" (click)="deleteDeck()" 
+          class="w-full rounded-2xl bg-rose-500/20 border border-rose-500/30 px-8 py-4 text-sm font-black text-rose-200 transition-all hover:bg-rose-500/30 active:scale-95">
+          {{ 'DECKS.MY_DECKS.DELETE' | translate }}
+        </button>
+        <button *ngIf="!isOwner" (click)="copyDeck()" 
+          class="w-full rounded-2xl bg-white/10 border border-white/20 px-8 py-4 text-sm font-black text-white transition-all hover:bg-white/20 active:scale-95">
+          {{ 'AUTH.PROFILE.ORDERS.REPEAT' | translate }}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="mx-auto w-full max-w-[1800px] lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-12 items-start">
+    <!-- Grid de Cartas -->
+    <main class="space-y-8 order-2 lg:order-1">
+      <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+        <article *ngFor="let card of deckCards; let i = index" 
+          (click)="openCardDetail(card)"
+          class="group relative overflow-hidden rounded-[2rem] bg-[#1d2269] border border-white/5 transition-all duration-500 hover:scale-[1.05] hover:border-[#857752]/50 hover:shadow-2xl cursor-pointer">
+          <div class="aspect-[3/4] p-3 relative">
+            <img *ngIf="card.imageUrl" [src]="card.imageUrl" [alt]="card.name" class="h-full w-full rounded-2xl object-cover transition-transform duration-700 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#1d2269] via-transparent to-transparent opacity-60"></div>
+            
+            <!-- Quantity Badge -->
+            <div class="absolute -top-1 -right-1 h-10 w-10 flex items-center justify-center rounded-2xl bg-[#857752] text-white font-black shadow-xl border-4 border-[#1d2269] group-hover:scale-110 transition-transform">
+              {{ card.quantity }}
+            </div>
+          </div>
+          <div class="p-5 pt-0 space-y-1">
+            <h3 class="text-[11px] font-black text-white truncate leading-tight group-hover:text-[#857752] transition-colors uppercase tracking-wider">{{ card.name }}</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-[9px] font-bold text-[#857752] uppercase">{{ card.color }}</span>
+              <span class="h-1 w-1 rounded-full bg-white/10"></span>
+              <span class="text-[9px] font-bold text-slate-500 uppercase">{{ card.cardSetId }}</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <!-- Sidebar Info -->
+    <aside class="space-y-8 order-1 lg:order-2 lg:sticky lg:top-10">
+      <!-- Description -->
+      <div *ngIf="deck.description" class="rounded-[2.5rem] border border-white/5 bg-[#1d2269] p-8 shadow-2xl space-y-4">
+        <h2 class="text-sm font-black text-[#857752] uppercase tracking-[0.2em]">{{ 'DECKS.VIEW.DESCRIPTION' | translate }}</h2>
+        <p class="text-slate-300 leading-relaxed italic">{{ deck.description }}</p>
+      </div>
+
+      <!-- Stats / Cost Curve -->
+      <div class="rounded-[2.5rem] border border-white/5 bg-[#1d2269] p-8 shadow-2xl space-y-6">
+        <h2 class="text-sm font-black text-[#857752] uppercase tracking-[0.2em]">{{ 'DECKS.BUILDER.STATS' | translate }}</h2>
+        <!-- Aquí podrías añadir una gráfica o desglose por costes en el futuro -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="p-6 rounded-[2rem] bg-black/20 border border-white/5 text-center space-y-1">
+            <span class="text-[10px] font-black text-[#857752] uppercase tracking-widest">{{ 'DECKS.VIEW.AUTHOR' | translate }}</span>
+            <p class="text-lg font-black text-white truncate">{{ deck.username }}</p>
+          </div>
+          <div class="p-6 rounded-[2rem] bg-black/20 border border-white/5 text-center space-y-1">
+            <span class="text-[10px] font-black text-[#857752] uppercase tracking-widest">{{ 'DECKS.VIEW.DATE' | translate }}</span>
+            <p class="text-lg font-black text-white">{{ deck.createdAt | dateFormat }}</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Toast de Copiado -->
+  <div *ngIf="exportTextCopied" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[1000] animate-in slide-in-from-bottom-10 fade-in duration-300">
+    <div class="bg-emerald-500 text-white px-8 py-4 rounded-2xl font-black text-sm shadow-2xl shadow-emerald-500/20 flex items-center gap-3">
+      <span>✅</span>
+      {{ 'DECKS.VIEW.COPIED' | translate }}
+    </div>
+  </div>
+
+  <!-- Card Detail Modal -->
+  <div *ngIf="detailOpen" class="fixed inset-0 z-[200] flex items-center justify-center bg-[#0b0d2a]/90 backdrop-blur-md p-4 animate-in fade-in duration-300" (click)="closeDetail()">
+    <div class="flex h-[calc(100vh-4rem)] w-full max-w-6xl flex-col overflow-hidden rounded-[3rem] border border-[#857752]/30 bg-[#1d2269] shadow-[0_40px_100px_rgba(0,0,0,0.8)]" (click)="$event.stopPropagation()">
+      <header class="flex flex-shrink-0 items-center justify-between gap-4 bg-[#0b0d2a]/30 p-5 lg:px-8">
+        <div class="min-w-0 space-y-1">
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#857752]">{{ 'CARDS.VIEW_DETAILS' | translate }}</p>
+          <h2 class="truncate text-3xl font-black text-white tracking-tight">{{ detailCard?.name }}</h2>
+        </div>
+        <button type="button" (click)="closeDetail()" class="h-14 w-14 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all active:scale-90">✕</button>
+      </header>
+
+      <div *ngIf="detailCard" class="grid min-h-0 flex-1 gap-6 p-5 lg:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] overflow-y-auto custom-scrollbar">
+        <!-- Columna Izquierda -->
+        <div class="flex flex-col gap-6">
+          <div class="relative flex aspect-[3/4] items-center justify-center rounded-[2.5rem] border border-white/5 bg-[#0b0d2a] p-3 shadow-inner gold-glow">
+            <img [src]="detailCard.imageUrl" [alt]="detailCard.name" class="max-h-full w-full rounded-[1.5rem] object-contain shadow-2xl">
+          </div>
+        </div>
+
+        <!-- Columna Derecha -->
+        <div class="flex flex-col gap-6">
+          <div class="flex items-center justify-between">
+             <div class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-slate-400 tracking-widest uppercase">SET: {{ detailCard.cardSetId }}</div>
+             <span class="rounded-lg bg-[#857752]/20 border border-[#857752]/30 px-3 py-1 text-xs font-black text-[#857752] uppercase tracking-widest">{{ detailCard.rarity }}</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+             <div *ngFor="let item of [
+               {l: 'CARDS.TYPE', v: detailCard.type},
+               {l: 'CARDS.COLOR', v: detailCard.color},
+               {l: 'CARDS.COST', v: detailCard.cost},
+               {l: 'CARDS.POWER', v: detailCard.power}
+             ]" class="rounded-[1.5rem] bg-[#0b0d2a]/40 border border-white/5 p-4 space-y-0.5">
+               <span class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ item.l | translate }}</span>
+               <p class="text-lg font-bold text-white">{{ item.v || '-' }}</p>
+             </div>
+          </div>
+
+          <div *ngIf="detailCard.text" class="rounded-[1.5rem] border border-[#857752]/20 bg-[#0b0d2a]/30 p-5 text-sm leading-relaxed text-slate-200 italic shadow-inner">{{ detailCard.text }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

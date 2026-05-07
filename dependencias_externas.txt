@@ -1,0 +1,17 @@
+# Dependencias Externas — OPTCG Deck Builder
+
+## jspdf (v3+)
+- **Paquete npm**: `jspdf`
+- **Versión instalada**: ^3.x (última estable)
+- **Propósito**: Generación de archivos PDF reales en el cliente (browser-side).
+- **Uso en el proyecto**: `DeckViewComponent.exportToPdf()` utiliza jsPDF para
+  crear un PDF A4 con las cartas del mazo distribuidas en una cuadrícula de
+  3×3 (cartas de 63×88 mm), incluyendo el líder como primera carta, marca de
+  agua y datos del mazo en la cabecera de la primera página.
+- **¿Por qué se eligió esta librería?**: Es la librería de generación de PDFs
+  más usada en el ecosistema JavaScript/TypeScript, sin dependencias de servidor,
+  con soporte nativo para añadir imágenes en formato Base64 (`doc.addImage()`),
+  control total del layout en milímetros (ideal para tamaños de carta estándar),
+  y tipings TypeScript incluidos.
+- **Repositorio**: https://github.com/parallax/jsPDF
+- **Licencia**: MIT

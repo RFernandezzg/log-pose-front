@@ -1,0 +1,142 @@
+<section class="space-y-10 pb-20">
+  <header class="flex items-end justify-between border-b border-[#857752]/20 pb-8">
+    <div class="space-y-2">
+      <div
+        class="inline-flex items-center gap-2 rounded-full bg-[#857752]/10 px-3 py-1 text-[10px] font-black tracking-widest text-[#857752] uppercase">
+        {{ 'HOME.STATS.LEADERS' | translate }}
+      </div>
+      <h1 class="text-4xl font-black text-white tracking-tight">{{ 'CARDS.LEADERS_TITLE' | translate }}</h1>
+      <p class="text-sm text-slate-400 font-medium">{{ 'CARDS.LEADERS_SUBTITLE' | translate }}</p>
+    </div>
+    <a routerLink="/cards"
+      class="rounded-2xl bg-white/5 border border-white/10 px-6 py-3 text-xs font-bold text-[#857752] hover:bg-white/10 transition-all active:scale-95">{{ 'CARDS.BACK_TO_LIST' | translate }}</a>
+  </header>
+
+  <div *ngIf="error"
+    class="rounded-3xl border border-rose-500/20 bg-rose-500/5 px-6 py-4 text-sm text-rose-200 animate-in fade-in slide-in-from-top-2">
+    {{ error }}</div>
+
+  <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 space-y-4">
+    <div class="h-12 w-12 rounded-full border-4 border-[#857752]/20 border-t-[#857752] animate-spin"></div>
+    <p class="text-[10px] font-black text-[#857752] uppercase tracking-[0.3em]">{{ 'CARDS.LOADING' | translate }}</p>
+  </div>
+
+  <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <article *ngFor="let card of leaders"
+      class="group relative overflow-hidden rounded-[2.5rem] bg-[#1d2269] border border-white/5 transition-all duration-500 hover:scale-[1.03] hover:border-[#857752]/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+
+      <div class="aspect-[3/4] overflow-hidden p-4">
+        <img *ngIf="card.imageUrl" [src]="card.imageUrl" [alt]="card.name"
+          class="h-full w-full rounded-[2rem] object-cover transition-all duration-700 group-hover:scale-110">
+        <div
+          class="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#1d2269] via-transparent to-transparent opacity-60">
+        </div>
+      </div>
+
+      <div class="p-8 pt-0 space-y-5">
+        <div class="space-y-1">
+          <h2 class="text-lg font-black text-white truncate leading-tight group-hover:text-[#857752] transition-colors">
+            {{ card.name }}</h2>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-bold text-[#857752] uppercase tracking-widest">{{ card.color }}</span>
+            <span class="h-1 w-1 rounded-full bg-white/20"></span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ card.cardSetId }}</span>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button type="button" (click)="openDetail(card)"
+            class="flex-1 rounded-2xl bg-white/5 border border-white/10 py-3 text-xs font-black text-white hover:bg-white/10 transition-all active:scale-95">Info</button>
+          <button type="button" (click)="viewDecksWithLeader(card); $event.stopPropagation()"
+            class="flex-[2] rounded-2xl bg-[#857752] py-3 text-xs font-black text-white shadow-xl shadow-[#857752]/20 hover:bg-[#a3946b] transition-all active:scale-95">{{ 'CARDS.VIEW_DECKS' | translate }}</button>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- Modal detalle -->
+<div *ngIf="detailOpen"
+  class="fixed inset-0 z-[200] flex items-center justify-center bg-[#0b0d2a]/90 backdrop-blur-md p-4 animate-in fade-in duration-300"
+  (click)="closeDetail()">
+  <div
+    class="flex h-[calc(100vh-4rem)] w-full max-w-6xl flex-col overflow-hidden rounded-[3rem] border border-[#857752]/30 bg-[#1d2269] shadow-[0_40px_100px_rgba(0,0,0,0.8)]"
+    (click)="$event.stopPropagation()">
+    <header class="flex flex-shrink-0 items-center justify-between gap-4 bg-[#0b0d2a]/30 p-5 lg:px-8">
+      <div class="min-w-0 space-y-1">
+        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#857752]">{{ 'CARDS.VIEW_DETAILS' | translate }}</p>
+        <h2 class="truncate text-3xl font-black text-white tracking-tight">{{ detailCard?.name || 'Leader' }}</h2>
+      </div>
+      <button type="button" (click)="closeDetail()"
+        class="h-14 w-14 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all active:scale-90">✕</button>
+    </header>
+
+    <div *ngIf="detailCard"
+      class="grid min-h-0 flex-1 gap-6 p-5 lg:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] overflow-y-auto custom-scrollbar">
+      <!-- Columna Izquierda: Imagen y Selector de Versiones -->
+      <div class="flex flex-col gap-6">
+        <!-- Imagen Principal -->
+        <div
+          class="relative flex aspect-[3/4] items-center justify-center rounded-[2.5rem] border border-white/5 bg-[#0b0d2a] p-3 shadow-inner gold-glow">
+          <img *ngIf="activeDetailSlide?.imageUrl" [src]="activeDetailSlide?.imageUrl" [alt]="detailCard.name"
+            class="max-h-full w-full rounded-[1.5rem] object-contain shadow-2xl">
+          <div *ngIf="detailLoading"
+            class="absolute inset-0 flex items-center justify-center bg-[#1d2269]/80 rounded-[2.5rem]">
+            <div class="h-12 w-12 animate-spin rounded-full border-4 border-[#857752] border-t-transparent"></div>
+          </div>
+        </div>
+
+        <!-- Selector de Versiones (Thumbnails) -->
+        <div *ngIf="detailSlides.length > 1" class="space-y-3">
+          <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ 'CARDS.TITLE' | translate }}</p>
+          <div class="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+            <button *ngFor="let slide of detailSlides; let i = index" type="button" (click)="selectDetailIndex(i)"
+              class="relative h-20 w-14 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-300 hover:scale-105"
+              [ngClass]="i === detailImageIndex ? 'border-[#857752]' : 'border-white/5'">
+              <img [src]="slide.imageUrl" class="h-full w-full object-cover">
+              <div *ngIf="i === detailImageIndex" class="absolute inset-0 bg-[#857752]/20"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Información -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <div
+            class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-slate-400 tracking-widest uppercase">
+            SET: {{ detailCard.cardSetId || detailCard.id || '-' }}
+          </div>
+          <span *ngIf="activeDetailSlide?.rarity"
+            class="rounded-lg bg-[#857752]/20 border border-[#857752]/30 px-3 py-1 text-xs font-black text-[#857752] uppercase tracking-widest">
+            {{ activeDetailSlide?.rarity }}
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div *ngFor="let item of [
+            {l: 'CARDS.TYPE', v: detailCard.type},
+            {l: 'CARDS.COLOR', v: detailCard.color},
+            {l: 'Atributo', v: detailCard.attribute},
+            {l: 'CARDS.POWER', v: detailCard.power},
+            {l: 'Vida', v: detailCard.life},
+            {l: 'CARDS.COST', v: detailCard.cost || '-'}
+          ]" class="rounded-[1.5rem] bg-[#0b0d2a]/40 border border-white/5 p-4 space-y-0.5">
+            <span class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ item.l | translate }}</span>
+            <p class="text-lg font-bold text-white">{{ item.v || '-' }}</p>
+          </div>
+        </div>
+
+        <div *ngIf="detailCard.text"
+          class="rounded-[1.5rem] border border-[#857752]/20 bg-[#0b0d2a]/30 p-5 text-sm leading-relaxed text-slate-200 lg:text-base italic shadow-inner">
+          {{ detailCard.text }}
+        </div>
+
+        <button type="button" (click)="viewDecksWithLeader(detailCard)"
+          class="w-full mt-auto rounded-[1.5rem] bg-[#857752] py-4 text-sm font-black text-white shadow-2xl hover:bg-[#a3946b] transition-all active:scale-95 flex items-center justify-center gap-3">
+          <span>⚓ {{ 'CARDS.VIEW_DECKS' | translate }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

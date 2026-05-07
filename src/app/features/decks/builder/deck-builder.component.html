@@ -1,0 +1,299 @@
+<section class="min-h-screen space-y-10 pb-20">
+  <!-- Header -->
+  <header class="flex items-end justify-between border-b border-[#857752]/20 pb-8">
+    <div class="space-y-2">
+      <div
+        class="inline-flex items-center gap-2 rounded-full bg-[#857752]/10 px-3 py-1 text-[10px] font-black tracking-widest text-[#857752] uppercase">
+        {{ 'NAV.DECKS.BUILD' | translate }}
+      </div>
+      <h1 class="text-4xl font-black text-white tracking-tight">{{ 'DECKS.BUILDER.TITLE' | translate }}</h1>
+      <p class="text-sm text-slate-400 font-medium">{{ 'DECKS.BUILDER.SUBTITLE' | translate }}</p>
+    </div>
+  </header>
+
+  <div class="mx-auto w-full max-w-[1920px] lg:grid lg:grid-cols-[1fr_450px] gap-10 items-start">
+    <!-- Left Column: Search & Catalog -->
+    <div class="space-y-8 min-w-0">
+      
+      <!-- Step 1: Select Leader -->
+      <div class="rounded-[2.5rem] border border-white/5 bg-[#1d2269] p-8 shadow-2xl space-y-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-black text-[#857752] uppercase tracking-[0.2em]">{{ 'DECKS.BUILDER.SELECT_LEADER' | translate }}</h2>
+          <div *ngIf="selectedLeader" class="flex items-center gap-3 animate-in fade-in slide-in-from-right-4">
+            <span class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Líder Seleccionado:</span>
+            <span class="rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 text-[10px] font-black text-emerald-400 uppercase tracking-widest">{{ selectedLeader.name }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="!selectedLeader" class="flex flex-col items-center justify-center py-10 border-2 border-dashed border-white/5 rounded-[2rem] bg-black/20 text-center space-y-4">
+          <span class="text-4xl">👑</span>
+          <p class="text-slate-400 text-sm font-medium">Busca un líder en el catálogo de abajo y haz clic en "Añadir"</p>
+        </div>
+
+        <!-- Selected Leader Card -->
+        <div *ngIf="selectedLeader" class="flex flex-col sm:flex-row items-center gap-8 p-6 rounded-[2rem] bg-[#0b0d2a]/50 border border-white/5 shadow-inner">
+          <div class="w-32 aspect-[3/4] flex-shrink-0 relative group">
+             <img [src]="selectedLeader.imageUrl" class="h-full w-full object-contain rounded-xl shadow-2xl transition-transform group-hover:scale-105">
+             <div class="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] text-white shadow-lg">✓</div>
+          </div>
+          <div class="flex-1 space-y-4 text-center sm:text-left">
+            <div class="space-y-1">
+              <h3 class="text-xl font-black text-white">{{ selectedLeader.name }}</h3>
+              <div class="flex flex-wrap justify-center sm:justify-start items-center gap-2">
+                <span class="px-3 py-0.5 rounded-full bg-[#857752]/20 border border-[#857752]/30 text-[10px] font-black text-[#857752] uppercase tracking-widest">{{ selectedLeader.color }}</span>
+                <span class="h-1 w-1 rounded-full bg-white/10"></span>
+                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{{ selectedLeader.cardSetId }}</span>
+              </div>
+            </div>
+            <button (click)="removeLeader()" class="rounded-xl border border-rose-500/20 bg-rose-500/5 px-6 py-2 text-[10px] font-black text-rose-500 hover:bg-rose-500 hover:text-white transition-all uppercase">Cambiar Líder</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Search Cards -->
+      <div class="space-y-6">
+        <h2 class="text-sm font-black text-[#857752] uppercase tracking-[0.2em] px-4">{{ 'DECKS.BUILDER.BUILD_DECK' | translate }}</h2>
+        
+        <div class="rounded-[2.5rem] border border-white/5 bg-[#1d2269] p-8 shadow-2xl space-y-8">
+          <!-- Filters Mini -->
+          <form [formGroup]="filters" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-1">
+              <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'DECKS.BUILDER.SEARCH_CARDS' | translate }}</label>
+              <input formControlName="nameOrId" placeholder="Nombre o ID..." class="mt-2 w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-5 py-3.5 text-sm text-white focus:border-[#857752]/50 outline-none transition-all" />
+            </div>
+            <div>
+              <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.SET' | translate }}</label>
+              <select formControlName="set" class="mt-2 w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-5 py-3.5 text-sm text-white focus:border-[#857752]/50 outline-none transition-all appearance-none cursor-pointer">
+                <option value="">-- {{ 'CARDS.CAT_ALL' | translate }} --</option>
+                <option *ngFor="let s of sets" [value]="s['setId'] || s['id'] || s['set_id']">{{ s['setName'] || s['name'] || s['set_name'] }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.COLOR' | translate }}</label>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <button type="button" *ngFor="let col of colorsOptions" (click)="toggleArrayValue('colors', col)" 
+                  class="rounded-xl border border-white/5 px-3 py-1.5 text-[10px] font-bold transition-all hover:bg-white/10" 
+                  [ngClass]="isSelected('colors', col) ? 'bg-[#857752] text-white shadow-lg shadow-[#857752]/20' : 'bg-white/5 text-slate-400'">
+                  {{ col }}
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Available Cards Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-6">
+            <article *ngFor="let card of pagedAvailableCards" 
+              class="group relative overflow-hidden rounded-[2rem] bg-[#0b0d2a]/40 border border-white/5 transition-all duration-300 hover:border-[#857752]/50 hover:shadow-2xl">
+              <div class="aspect-[3/4] p-3 relative cursor-help" (mouseenter)="onCardHover(card, $event)" (mouseleave)="onCardLeave()">
+                <img [src]="card.imageUrl" [alt]="card.name" class="h-full w-full rounded-2xl object-cover transition-transform duration-500 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0b0d2a] via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity"></div>
+                
+                <!-- Action overlay -->
+                <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform">
+                  <button (click)="addCardToDeck(card)" class="w-full rounded-xl bg-[#857752] py-2 text-[10px] font-black text-white shadow-xl hover:bg-[#a3946b] transition-all active:scale-95 uppercase">{{ 'DECKS.BUILDER.ADD' | translate }}</button>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- Catalog Pagination -->
+          <div *ngIf="totalPages > 1" class="flex justify-center pt-6 border-t border-white/5">
+            <div class="inline-flex items-center gap-2 rounded-2xl border border-white/5 bg-black/20 p-1.5">
+              <button (click)="goToPage(1)" [disabled]="currentPage === 1" class="h-10 w-10 flex items-center justify-center rounded-xl transition-all hover:bg-white/5 disabled:opacity-20">⏮</button>
+              <button (click)="prevPage()" [disabled]="currentPage === 1" class="h-10 w-10 flex items-center justify-center rounded-xl transition-all hover:bg-white/5 disabled:opacity-20">◀</button>
+              
+              <div class="flex items-center gap-1">
+                <button *ngFor="let page of visiblePageNumbers" (click)="goToPage(page)" 
+                  [class.bg-[#857752]]="page === currentPage"
+                  [class.text-white]="page === currentPage"
+                  class="h-10 w-10 flex items-center justify-center rounded-xl text-xs font-bold transition-all hover:bg-white/5">
+                  {{ page }}
+                </button>
+              </div>
+
+              <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="h-10 w-10 flex items-center justify-center rounded-xl transition-all hover:bg-white/5 disabled:opacity-20">▶</button>
+              <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages" class="h-10 w-10 flex items-center justify-center rounded-xl transition-all hover:bg-white/5 disabled:opacity-20">⏭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Deck Info & List -->
+    <aside class="sticky top-10 space-y-8">
+      <!-- Deck Config -->
+      <div class="rounded-[2.5rem] border border-white/5 bg-[#1d2269] p-8 shadow-2xl space-y-6">
+        <h2 class="text-sm font-black text-[#857752] uppercase tracking-[0.2em]">{{ 'DECKS.BUILDER.DECK_INFO' | translate }}</h2>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 block">{{ 'DECKS.BUILDER.DECK_NAME' | translate }}</label>
+            <input type="text" [(ngModel)]="deckName" placeholder="Ej: Kaido Ramp Turbo" class="w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-5 py-3.5 text-sm text-white focus:border-[#857752]/50 outline-none transition-all" />
+          </div>
+
+          <div>
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 block">{{ 'DECKS.BUILDER.DESCRIPTION' | translate }}</label>
+            <textarea [(ngModel)]="deckDescription" rows="3" placeholder="Describe tu estrategia..." class="w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-5 py-3.5 text-sm text-white focus:border-[#857752]/50 outline-none transition-all resize-none"></textarea>
+          </div>
+
+          <div class="flex items-center justify-between p-4 rounded-2xl bg-[#0b0d2a]/30 border border-white/5">
+            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ 'DECKS.BUILDER.VISIBILITY' | translate }}</span>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-bold" [ngClass]="deckIsPublic ? 'text-[#857752]' : 'text-slate-500'">{{ deckIsPublic ? ('DECKS.MY_DECKS.PUBLIC' | translate) : ('DECKS.MY_DECKS.PRIVATE' | translate) }}</span>
+              <button (click)="deckIsPublic = !deckIsPublic" class="h-6 w-12 rounded-full p-1 transition-colors relative" [ngClass]="deckIsPublic ? 'bg-[#857752]' : 'bg-slate-700'">
+                <div class="h-4 w-4 rounded-full bg-white transition-all shadow-md" [ngClass]="deckIsPublic ? 'ml-6' : 'ml-0'"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button (click)="saveDeck()" class="w-full rounded-[1.5rem] bg-[#857752] py-4 text-sm font-black text-white shadow-2xl shadow-[#857752]/20 hover:bg-[#a3946b] transition-all active:scale-95 flex items-center justify-center gap-3">
+          <span>{{ editingDeckId ? ('DECKS.MY_DECKS.EDIT' | translate) : ('DECKS.BUILDER.SAVE' | translate) }}</span>
+          <span class="text-lg">💾</span>
+        </button>
+      </div>
+
+      <!-- Card List -->
+      <div class="rounded-[2.5rem] border border-white/5 bg-[#1d2269] p-8 shadow-2xl flex flex-col h-[700px]">
+        <div class="flex items-center justify-between mb-8 flex-shrink-0">
+          <h2 class="text-sm font-black text-[#857752] uppercase tracking-[0.2em]">{{ 'DECKS.BUILDER.BUILD_DECK' | translate }}</h2>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl font-black text-white">{{ totalDeckCards }}</span>
+            <span class="text-sm font-black text-slate-500">/ 50</span>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full h-1.5 bg-black/40 rounded-full mb-8 overflow-hidden flex-shrink-0">
+          <div class="h-full bg-[#857752] transition-all duration-500 shadow-[0_0_10px_#857752]" [style.width.%]="(totalDeckCards / 50) * 100"></div>
+        </div>
+
+        <!-- Scrollable List -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar pr-4 space-y-3">
+          <div *ngFor="let item of deckCardsList" 
+            (click)="openCardDetail(item.card, item.key)"
+            class="group flex items-center gap-4 p-3 rounded-2xl bg-[#0b0d2a]/40 border border-white/5 hover:border-[#857752]/30 transition-all cursor-pointer">
+            <div class="h-16 w-12 rounded-lg overflow-hidden flex-shrink-0 bg-black/40">
+              <img [src]="item.card.imageUrl" class="h-full w-full object-cover">
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[11px] font-black text-white truncate group-hover:text-[#857752] transition-colors uppercase tracking-wide">{{ item.card.name }}</p>
+              <div class="flex items-center gap-2">
+                <span class="text-[9px] font-black text-[#857752] uppercase">{{ item.card.color }}</span>
+                <span class="h-1 w-1 rounded-full bg-white/10"></span>
+                <span class="text-[9px] font-bold text-slate-500 uppercase">{{ item.card.cardSetId }}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3" (click)="$event.stopPropagation()">
+              <button (click)="decreaseCardQuantity(item)" class="h-8 w-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/20 transition-all active:scale-90">
+                {{ item.quantity === 1 ? '✕' : '-' }}
+              </button>
+              <span class="w-4 text-center text-sm font-black text-white">{{ item.quantity }}</span>
+              <button (click)="increaseCardQuantity(item)" class="h-8 w-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-emerald-500/10 hover:text-emerald-400 hover:border-emerald-500/20 transition-all active:scale-90">+</button>
+            </div>
+          </div>
+
+          <div *ngIf="deckCardsList.length === 0" class="h-full flex flex-col items-center justify-center text-center opacity-30 space-y-4">
+            <span class="text-5xl">⚓</span>
+            <p class="text-xs font-black uppercase tracking-widest text-[#857752]">Tu tripulación está vacía</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Card Preview on Hover -->
+  <div *ngIf="hoveredCard" 
+    class="fixed z-[500] pointer-events-none animate-in fade-in zoom-in-95 duration-200"
+    [style.left.px]="previewX"
+    [style.top.px]="previewY">
+    <div class="w-80 rounded-[2rem] border-2 border-[#857752]/50 bg-[#1d2269] p-4 shadow-[0_30px_60px_rgba(0,0,0,0.8)] gold-glow">
+      <img [src]="hoveredCard.imageUrl" class="w-full rounded-2xl shadow-2xl mb-4">
+      <div class="space-y-3">
+        <h3 class="text-lg font-black text-white leading-tight">{{ hoveredCard.name }}</h3>
+        <div class="flex items-center gap-3">
+          <span class="px-3 py-1 rounded-full bg-[#857752]/20 border border-[#857752]/30 text-[10px] font-black text-[#857752] uppercase tracking-widest">{{ hoveredCard.color }}</span>
+          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ hoveredCard.cardSetId }}</span>
+        </div>
+        <p *ngIf="hoveredCard.text" class="text-[11px] text-slate-300 leading-relaxed italic border-t border-white/5 pt-3">{{ hoveredCard.text }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Detail Modal (para cambiar versiones) -->
+  <div *ngIf="detailOpen" class="fixed inset-0 z-[600] flex items-center justify-center bg-[#0b0d2a]/90 backdrop-blur-md p-4 animate-in fade-in duration-300" (click)="closeCardDetail()">
+    <div class="flex h-[calc(100vh-4rem)] w-full max-w-6xl flex-col overflow-hidden rounded-[3rem] border border-[#857752]/30 bg-[#1d2269] shadow-[0_40px_100px_rgba(0,0,0,0.8)]" (click)="$event.stopPropagation()">
+      <header class="flex flex-shrink-0 items-center justify-between gap-4 bg-[#0b0d2a]/30 p-5 lg:px-8">
+        <div class="min-w-0 space-y-1">
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#857752]">Gestionar Versión</p>
+          <h2 class="truncate text-3xl font-black text-white tracking-tight">{{ detailCard?.name }}</h2>
+        </div>
+        <button type="button" (click)="closeCardDetail()" class="h-14 w-14 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all active:scale-90">✕</button>
+      </header>
+
+      <div *ngIf="detailCard" class="grid min-h-0 flex-1 gap-6 p-5 lg:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] overflow-y-auto custom-scrollbar">
+        <!-- Columna Izquierda -->
+        <div class="flex flex-col gap-6">
+          <div class="relative flex aspect-[3/4] items-center justify-center rounded-[2.5rem] border border-white/5 bg-[#0b0d2a] p-3 shadow-inner gold-glow">
+            <img [src]="activeDetailSlide?.imageUrl" [alt]="detailCard.name" class="max-h-full w-full rounded-[1.5rem] object-contain shadow-2xl">
+            <div *ngIf="detailLoading" class="absolute inset-0 flex items-center justify-center bg-[#1d2269]/80 rounded-[2.5rem]">
+              <div class="h-12 w-12 animate-spin rounded-full border-4 border-[#857752] border-t-transparent"></div>
+            </div>
+          </div>
+
+          <!-- Versions -->
+          <div *ngIf="detailSlides.length > 1" class="space-y-3">
+            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Variantes del Arte</p>
+            <div class="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+              <button *ngFor="let slide of detailSlides; let i = index" (click)="selectDetailIndex(i)" class="relative h-20 w-14 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-300 hover:scale-105" [ngClass]="i === detailImageIndex ? 'border-[#857752]' : 'border-white/5'">
+                <img [src]="slide.imageUrl" class="h-full w-full object-cover">
+                <div *ngIf="i === detailImageIndex" class="absolute inset-0 bg-[#857752]/20"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna Derecha -->
+        <div class="flex flex-col gap-6">
+          <div class="flex items-center justify-between">
+             <div class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-slate-400 tracking-widest uppercase">ID: {{ detailCard.cardSetId }}</div>
+             <span class="rounded-lg bg-[#857752]/20 border border-[#857752]/30 px-3 py-1 text-xs font-black text-[#857752] uppercase tracking-widest">{{ activeDetailSlide?.rarity }}</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+             <div *ngFor="let item of [
+               {l: 'CARDS.TYPE', v: detailCard.type},
+               {l: 'CARDS.COLOR', v: detailCard.color},
+               {l: 'CARDS.COST', v: detailCard.cost},
+               {l: 'CARDS.POWER', v: detailCard.power}
+             ]" class="rounded-[1.5rem] bg-[#0b0d2a]/40 border border-white/5 p-4 space-y-0.5">
+               <span class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ item.l | translate }}</span>
+               <p class="text-lg font-bold text-white">{{ item.v || '-' }}</p>
+             </div>
+          </div>
+
+          <div *ngIf="detailCard.text" class="rounded-[1.5rem] border border-[#857752]/20 bg-[#0b0d2a]/30 p-5 text-sm leading-relaxed text-slate-200 italic shadow-inner">{{ detailCard.text }}</div>
+
+          <button (click)="applySelectedDetailVersionToDeck()" 
+            class="w-full mt-auto rounded-2xl bg-[#857752] py-4 text-sm font-black text-white shadow-xl hover:bg-[#a3946b] transition-all active:scale-95 uppercase">
+            Seleccionar esta versión
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Modal -->
+  <div *ngIf="notificationModalOpen" class="fixed inset-0 z-[1000] flex items-center justify-center bg-[#0b0d2a]/95 backdrop-blur-xl p-4 animate-in fade-in duration-300">
+    <div class="w-full max-w-md rounded-[2.5rem] bg-[#1d2269] border border-[#857752]/30 p-10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] text-center space-y-6">
+      <div class="mx-auto h-20 w-20 rounded-full bg-[#857752]/20 flex items-center justify-center text-3xl">⚓</div>
+      <div class="space-y-2">
+        <h3 class="text-2xl font-black text-white">{{ notificationModalTitle }}</h3>
+        <p class="text-slate-400 font-medium leading-relaxed">{{ notificationModalMessage }}</p>
+      </div>
+      <button (click)="closeNotificationModal()" class="w-full rounded-2xl bg-[#857752] py-4 text-sm font-black text-white shadow-xl hover:bg-[#a3946b] transition-all active:scale-95 uppercase">
+        {{ notificationModalButtonLabel }}
+      </button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,7 @@
+/* Scoped styles for CardsComponent
+   Most layout/visuals use Tailwind utility classes.
+   Add component-specific overrides here when needed. */
+
+:host {
+  display: block;
+}

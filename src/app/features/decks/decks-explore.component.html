@@ -1,0 +1,97 @@
+<section class="space-y-10 pb-20">
+  <header class="flex items-end justify-between border-b border-[#857752]/20 pb-8">
+    <div class="space-y-2">
+      <div
+        class="inline-flex items-center gap-2 rounded-full bg-[#857752]/10 px-3 py-1 text-[10px] font-black tracking-widest text-[#857752] uppercase">
+        {{ 'DECKS.EXPLORE.TITLE' | translate }}
+      </div>
+      <h1 class="text-4xl font-black text-white tracking-tight">{{ 'DECKS.EXPLORE.TITLE' | translate }}</h1>
+      <p class="text-sm text-slate-400 font-medium">{{ 'DECKS.EXPLORE.SUBTITLE' | translate }}</p>
+    </div>
+  </header>
+
+  <!-- Filters section -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Color Filter -->
+    <div class="space-y-3">
+      <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.COLOR' | translate }}</label>
+      <select [(ngModel)]="selectedColor" (change)="applyFilters()"
+        class="w-full rounded-2xl border border-white/5 bg-[#1d2269] px-5 py-4 text-white focus:border-[#857752]/50 outline-none transition-all appearance-none cursor-pointer">
+        <option value="">-- {{ 'CARDS.CAT_ALL' | translate }} --</option>
+        <option *ngFor="let c of colors" [value]="c">{{ c }}</option>
+      </select>
+    </div>
+
+    <!-- Leader Search -->
+    <div class="md:col-span-2 space-y-3 relative">
+      <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'DECKS.EXPLORE.FILTER_LEADER' | translate }}</label>
+      <div class="relative">
+        <input type="text" [(ngModel)]="leaderSearchText" (input)="onLeaderSearch()" (focus)="onLeaderSearch()"
+          [placeholder]="'CARDS.SEARCH_PLACEHOLDER' | translate"
+          class="w-full rounded-2xl border border-white/5 bg-[#1d2269] px-5 py-4 text-white focus:border-[#857752]/50 outline-none transition-all" />
+        
+        <button *ngIf="filterLeaderId" (click)="clearLeaderFilter()" 
+          class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">✕</button>
+
+        <!-- Dropdown Result -->
+        <div *ngIf="showLeaderDropdown" 
+          class="absolute z-20 left-0 right-0 mt-2 rounded-2xl border border-white/10 bg-[#0b0d2a] shadow-2xl overflow-hidden max-h-80 overflow-y-auto custom-scrollbar animate-in fade-in slide-in-from-top-2">
+          <button *ngFor="let leader of filteredLeaders" (click)="selectLeader(leader)"
+            class="w-full flex items-center gap-4 p-4 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 text-left">
+            <div class="h-10 w-8 overflow-hidden rounded bg-black/40 flex-shrink-0">
+              <img [src]="leader.imageUrl" class="h-full w-full object-cover">
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-black text-white truncate">{{ leader.name }}</p>
+              <p class="text-[10px] font-bold text-[#857752] uppercase">{{ leader.cardSetId }} • {{ leader.color }}</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-20 space-y-4">
+    <div class="h-12 w-12 rounded-full border-4 border-[#857752]/20 border-t-[#857752] animate-spin"></div>
+    <p class="text-[10px] font-black text-[#857752] uppercase tracking-[0.3em]">{{ 'DECKS.EXPLORE.LOADING' | translate }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && decks.length === 0"
+    class="flex flex-col items-center justify-center rounded-[3rem] border border-white/5 bg-[#1d2269]/30 py-24 text-center">
+    <span class="text-7xl mb-6">🏜️</span>
+    <h3 class="text-2xl font-black text-white mb-2">{{ 'DECKS.EXPLORE.NO_DECKS' | translate }}</h3>
+    <p class="text-slate-400 font-medium">Sé el primero en compartir una estrategia con estos filtros.</p>
+  </div>
+
+  <div *ngIf="!isLoading && decks.length > 0" class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <article *ngFor="let deck of decks" [routerLink]="['/decks/view', deck.id]"
+      class="group relative overflow-hidden rounded-[2.5rem] bg-[#1d2269] border border-white/5 transition-all duration-500 hover:scale-[1.03] cursor-pointer"
+      [ngClass]="getBorderColorClass(deck)">
+      
+      <div class="aspect-[3/4] overflow-hidden p-4">
+        <img *ngIf="getLeaderImage(deck.leaderCardId)" [src]="getLeaderImage(deck.leaderCardId)" [alt]="deck.name"
+          class="h-full w-full rounded-[2rem] object-cover transition-all duration-700 group-hover:scale-110">
+        <div class="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#1d2269] via-transparent to-transparent opacity-60"></div>
+      </div>
+
+      <div class="p-8 pt-0 space-y-5">
+        <div class="space-y-1">
+          <h2 class="text-xl font-black text-white truncate leading-tight group-hover:text-[#857752] transition-colors">{{ deck.name }}</h2>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ 'DECKS.EXPLORE.BY' | translate }} {{ deck.username }}</span>
+            <span class="h-1 w-1 rounded-full bg-white/20"></span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{{ deck.createdAt | dateFormat }}</span>
+          </div>
+        </div>
+
+        <button
+          class="w-full rounded-2xl bg-white/5 border border-white/10 py-3 text-xs font-black text-white hover:bg-[#857752] hover:border-[#857752] transition-all active:scale-95 uppercase">{{ 'DECKS.EXPLORE.VIEW_DETAILS' | translate }}</button>
+      </div>
+    </article>
+  </div>
+
+  <!-- Pagination (Server Side) -->
+  <div *ngIf="!isLoading && totalPages > 1" class="flex justify-center pt-10">
+    <app-pagination [currentPage]="currentPageUI" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-pagination>
+  </div>
+</section>
