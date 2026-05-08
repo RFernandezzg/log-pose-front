@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core'; 
 import { CommonModule } from '@angular/common';
-import { Event } from '../../core/models/event.models';
+import { CommunityEvent } from '../../core/models/event.models';
 import { EventService } from '../../core/event.service';
-import { AuthService } from '../../core/auth.service';
+import { AuthSessionService } from '../../core/auth-session.service';
+import { AuthUser } from '../../core/auth.models';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -59,7 +60,7 @@ import { TranslateModule } from '@ngx-translate/core';
   `]
 })
 export class EventCardComponent implements OnInit {
-  @Input() event!: Event;
+  @Input() event!: CommunityEvent;
   @Output() statusChanged = new EventEmitter<void>();
 
   currentUsername: string | null = null;
@@ -68,11 +69,11 @@ export class EventCardComponent implements OnInit {
 
   constructor(
     private eventService: EventService,
-    private authService: AuthService
-  ) {}
+    private session: AuthSessionService
+  ) { }
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(user => {
+    this.session.user$.subscribe((user: AuthUser | null) => {
       this.currentUsername = user?.username || null;
       this.checkIfAttendee();
     });

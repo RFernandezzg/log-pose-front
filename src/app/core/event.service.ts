@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClientService } from './api-client.service';
-import { Event, EventRequest } from './models/event.models';
+import { CommunityEvent, EventRequest } from './models/event.models';
 
 @Injectable({
   providedIn: 'root'
@@ -11,23 +11,23 @@ export class EventService {
 
   constructor(private apiClient: ApiClientService) {}
 
-  getAllEvents(): Observable<Event[]> {
-    return this.apiClient.get<Event[]>(this.endpoint);
+  getAllEvents(): Observable<CommunityEvent[]> {
+    return this.apiClient.get<CommunityEvent[]>(this.endpoint);
   }
 
-  getEventById(id: number): Observable<Event> {
-    return this.apiClient.get<Event>(`${this.endpoint}/${id}`);
+  getEventById(id: number): Observable<CommunityEvent> {
+    return this.apiClient.get<CommunityEvent>(`${this.endpoint}/${id}`);
   }
 
-  createEvent(event: EventRequest): Observable<Event> {
-    return this.apiClient.post<Event>(this.endpoint, event);
+  createEvent(event: EventRequest): Observable<CommunityEvent> {
+    return this.apiClient.post<CommunityEvent>(this.endpoint, event);
   }
 
-  registerAttendee(eventId: number): Observable<Event> {
-    return this.apiClient.post<Event>(`${this.endpoint}/${eventId}/register`, {});
+  registerAttendee(eventId: number): Observable<CommunityEvent> {
+    return this.apiClient.post<CommunityEvent>(`${this.endpoint}/${eventId}/register`, {});
   }
 
-  unregisterAttendee(eventId: number): Observable<Event> {
-    return this.apiClient.post<Event>(`${this.endpoint}/${eventId}/unregister`, {});
+  unregisterAttendee(eventId: number): Observable<CommunityEvent> {
+    return this.apiClient.post<CommunityEvent>(`${this.endpoint}/${eventId}/unregister`, {});
   }
 }

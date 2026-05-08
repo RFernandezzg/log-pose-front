@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { EventService } from '../../core/event.service';
-import { Event } from '../../core/models/event.models';
+import { CommunityEvent } from '../../core/models/event.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { EventCardComponent } from './event-card.component';
 import { EventCreateComponent } from './event-create.component';
-import { AuthService } from '../../core/auth.service';
+import { AuthSessionService } from '../../core/auth-session.service';
+import { AuthUser } from '../../core/auth.models';
 
 @Component({
   selector: 'app-event-list',
@@ -47,19 +48,19 @@ import { AuthService } from '../../core/auth.service';
   `]
 })
 export class EventListComponent implements OnInit {
-  events: Event[] = [];
+  events: CommunityEvent[] = [];
   isLoading = true;
   showCreateModal = false;
   isLoggedIn = false;
 
   constructor(
     private eventService: EventService,
-    private authService: AuthService
-  ) {}
+    private session: AuthSessionService
+  ) { }
 
   ngOnInit(): void {
     this.loadEvents();
-    this.authService.currentUser$.subscribe(user => {
+    this.session.user$.subscribe((user: AuthUser | null) => {
       this.isLoggedIn = !!user;
     });
   }

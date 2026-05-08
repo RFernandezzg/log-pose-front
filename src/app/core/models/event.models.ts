@@ -1,4 +1,4 @@
-export interface Event {
+export interface CommunityEvent {
   id: number;
   name: string;
   description: string;
