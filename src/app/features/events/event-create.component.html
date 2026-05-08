@@ -1,0 +1,48 @@
+<div class="modal-overlay" (click)="close.emit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-3xl font-black text-gold uppercase tracking-tighter">{{ 'EVENTS.CREATE_TITLE' | translate }}</h2>
+      <button (click)="close.emit()" class="text-slate-400 hover:text-white transition-colors">
+        <i class="fas fa-times text-2xl"></i>
+      </button>
+    </div>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>{{ 'EVENTS.NAME' | translate }} *</label>
+        <input type="text" [(ngModel)]="eventData.name" name="name" required placeholder="Nombre del evento">
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'EVENTS.DESCRIPTION' | translate }}</label>
+        <textarea [(ngModel)]="eventData.description" name="description" rows="4" placeholder="Detalles del evento..."></textarea>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-group">
+          <label>{{ 'EVENTS.DATE_TIME' | translate }} *</label>
+          <input type="datetime-local" [(ngModel)]="eventData.dateTime" name="dateTime" required>
+        </div>
+        <div class="form-group">
+          <label>{{ 'EVENTS.LOCATION' | translate }} *</label>
+          <input type="text" [(ngModel)]="eventData.location" name="location" required placeholder="Ciudad, lugar...">
+        </div>
+      </div>
+
+      <div class="mt-10 flex gap-4">
+        <button 
+          type="button" 
+          (click)="close.emit()" 
+          class="flex-1 px-6 py-4 rounded-xl border border-white/10 text-slate-300 font-bold uppercase tracking-widest hover:bg-white/5 transition-all">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button 
+          type="submit" 
+          [disabled]="isLoading"
+          class="flex-[2] bg-gold-gradient text-dark-blue px-6 py-4 rounded-xl font-bold uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-gold/20">
+          {{ (isLoading ? 'COMMON.SAVING' : 'EVENTS.PUBLISH_ACTION') | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

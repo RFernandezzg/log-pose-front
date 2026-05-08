@@ -1,0 +1,94 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { EventService } from '../../core/event.service';
+import { Event } from '../../core/models/event.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { EventCardComponent } from './event-card.component';
+import { EventCreateComponent } from './event-create.component';
+import { AuthService } from '../../core/auth.service';
+
+@Component({
+  selector: 'app-event-list',
+  standalone: true,
+  imports: [CommonModule, RouterModule, TranslateModule, EventCardComponent, EventCreateComponent],
+  templateUrl: './event-list.component.html',
+  styles: [`
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+    .hero-section {
+      background: linear-gradient(135deg, rgba(29, 34, 105, 0.8) 0%, rgba(11, 13, 42, 0.9) 100%);
+      border-radius: 24px;
+      padding: 4rem 2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      border: 1px solid rgba(133, 119, 82, 0.3);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #857752;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(133, 119, 82, 0.4);
+    }
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+  `]
+})
+export class EventListComponent implements OnInit {
+  events: Event[] = [];
+  isLoading = true;
+  showCreateModal = false;
+  isLoggedIn = false;
+
+  constructor(
+    private eventService: EventService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadEvents();
+    this.authService.currentUser$.subscribe(user => {
+      this.isLoggedIn = !!user;
+    });
+  }
+
+  loadEvents(): void {
+    this.isLoading = true;
+    this.eventService.getAllEvents().subscribe({
+      next: (events) => {
+        this.events = events;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading events:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  openCreateModal(): void {
+    if (this.isLoggedIn) {
+      this.showCreateModal = true;
+    } else {
+      // Redirect to login or show alert
+      alert('Debes estar registrado para crear un evento.');
+    }
+  }
+
+  onEventCreated(): void {
+    this.showCreateModal = false;
+    this.loadEvents();
+  }
+}

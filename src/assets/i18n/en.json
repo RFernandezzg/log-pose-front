@@ -10,6 +10,7 @@
       "BUILDER": "Builder"
     },
     "PROFILE": "My Profile",
+    "EVENTS": "Events",
     "LOGOUT": "Logout",
     "LOGIN": "Login / Register"
   },
@@ -222,11 +223,30 @@
       "EXPORT": "Export",
       "EXPORT_TEXT": "Text List",
       "EXPORT_IMAGE": "Image (PNG)",
-      "EXPORT_PDF": "Documento (PDF)",
+      "EXPORT_PDF": "Document (PDF)",
       "COPIED": "Copied to clipboard!",
       "DESCRIPTION": "Captain Description",
       "AUTHOR": "Author",
       "DATE": "Date"
     }
+  },
+  "EVENTS": {
+    "TITLE": "Events Board",
+    "SUBTITLE": "Find tournaments, meetups, and events organized by the community.",
+    "PUBLISH": "Publish Event",
+    "PUBLISH_ACTION": "Publish",
+    "NO_EVENTS": "No events published at this time.",
+    "CREATED_BY": "Organized by",
+    "JOIN": "Join",
+    "LEAVE": "Leave",
+    "CREATE_TITLE": "Create New Event",
+    "NAME": "Event Name",
+    "DESCRIPTION": "Additional Information",
+    "DATE_TIME": "Date and Time",
+    "LOCATION": "Location"
+  },
+  "COMMON": {
+    "CANCEL": "Cancel",
+    "SAVING": "Saving..."
   }
 }

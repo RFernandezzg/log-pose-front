@@ -7,11 +7,17 @@
 
       <nav class="flex items-center gap-3 text-sm">
         <a routerLink="/" routerLinkActive="bg-[#857752] text-white" [routerLinkActiveOptions]="{exact: true}"
-          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">{{ 'NAV.HOME' | translate }}</a>
+          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">{{ 'NAV.HOME' |
+          translate }}</a>
         <a routerLink="/shop" routerLinkActive="bg-[#857752] text-white"
-          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium flex items-center gap-1">🛒 {{ 'NAV.SHOP' | translate }}</a>
+          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium flex items-center gap-1">🛒
+          {{ 'NAV.SHOP' | translate }}</a>
         <a routerLink="/cards" routerLinkActive="bg-[#857752] text-white"
-          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">{{ 'NAV.CARDS' | translate }}</a>
+          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">{{ 'NAV.CARDS' |
+          translate }}</a>
+        <a routerLink="/events" routerLinkActive="bg-[#857752] text-white"
+          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">📅 {{ 'NAV.EVENTS'
+          | translate }}</a>
 
         <!-- Dropdown Decks -->
         <div class="relative group">
@@ -57,7 +63,8 @@
           <button (click)="showLangDropdown = !showLangDropdown"
             class="flex items-center gap-2 rounded-full px-3 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium border border-[#857752]/20">
             <span class="text-lg">{{ langService.getCurrentLang() === 'es' ? '🇪🇸' : '🇬🇧' }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-50" [ngClass]="{'rotate-180': showLangDropdown}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-50"
+              [ngClass]="{'rotate-180': showLangDropdown}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
@@ -89,7 +96,8 @@
         <div *ngIf="session.isAuthenticated()" class="relative group">
           <button
             class="flex items-center gap-2 rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium border border-transparent hover:border-[#857752]/30">
-            <img *ngIf="session.user?.avatarUrl" [src]="session.user?.avatarUrl" alt="Avatar" class="h-6 w-6 rounded-full object-cover border border-[#857752]/50 shadow-sm" />
+            <img *ngIf="session.user?.avatarUrl" [src]="session.user?.avatarUrl" alt="Avatar"
+              class="h-6 w-6 rounded-full object-cover border border-[#857752]/50 shadow-sm" />
             <span *ngIf="!session.user?.avatarUrl" class="text-xl">👤</span>
             {{ session.user?.username || 'Perfil' }}
             <svg xmlns="http://www.w3.org/2000/svg"

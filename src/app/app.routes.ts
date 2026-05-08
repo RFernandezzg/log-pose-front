@@ -11,12 +11,14 @@ import { CardDetailComponent } from './features/cards/card-detail.component';
 import { LeadersComponent } from './features/cards/leaders.component';
 import { HomeComponent } from './features/home/home.component';
 import { ShopComponent } from './features/shop/shop.component';
+import { EventListComponent } from './features/events/event-list.component';
 import { authGuard } from './core/auth.guard';
 import { guestGuard } from './core/guest.guard';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
 	{ path: 'shop', component: ShopComponent },
+	{ path: 'events', component: EventListComponent },
 	{ path: 'cards', component: CardsComponent },
 	{ path: 'cards/leaders', component: LeadersComponent },
 	{ path: 'cards/:id', component: CardDetailComponent },

@@ -1,0 +1,51 @@
+<div class="event-card">
+  <div class="event-header">
+    <div class="flex justify-between items-start">
+      <h3 class="text-xl font-bold text-white mb-2">{{ event.name }}</h3>
+      <div class="bg-gold/20 text-gold px-3 py-1 rounded-full text-xs font-bold uppercase">
+        {{ event.attendeeCount }} / ∞
+      </div>
+    </div>
+    <div class="flex items-center text-slate-400 text-sm">
+      <i class="fas fa-map-marker-alt mr-2 text-gold"></i>
+      {{ event.location }}
+    </div>
+  </div>
+
+  <div class="event-body">
+    <p class="text-slate-300 text-sm mb-4 line-clamp-3">{{ event.description }}</p>
+    
+    <div class="space-y-2">
+      <div class="flex items-center text-slate-400 text-sm">
+        <i class="fas fa-calendar-day mr-2 text-gold"></i>
+        {{ formatDate(event.dateTime) }}
+      </div>
+      <div class="flex items-center text-slate-400 text-sm">
+        <i class="fas fa-user-circle mr-2 text-gold"></i>
+        {{ 'EVENTS.CREATED_BY' | translate }}: <span class="text-white ml-1 font-medium">{{ event.creator.username }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="event-footer">
+    <div class="avatar-stack">
+      <img 
+        *ngFor="let attendee of event.attendees | slice:0:5" 
+        [src]="attendee.avatarUrl || 'assets/default-avatar.png'" 
+        class="avatar" 
+        [title]="attendee.username">
+      <div *ngIf="event.attendeeCount > 5" class="avatar flex items-center justify-center text-[10px] text-white bg-slate-700">
+        +{{ event.attendeeCount - 5 }}
+      </div>
+    </div>
+
+    <button 
+      (click)="toggleRegistration()"
+      [disabled]="isLoading"
+      [ngClass]="isAttendee ? 'bg-red-500/20 text-red-500 border border-red-500/50 hover:bg-red-500/30' : 'bg-gold-gradient text-dark-blue'"
+      class="px-5 py-2 rounded-xl text-sm font-bold uppercase transition-all duration-300 disabled:opacity-50">
+      <span *ngIf="!isLoading">{{ (isAttendee ? 'EVENTS.LEAVE' : 'EVENTS.JOIN') | translate }}</span>
+      <span *ngIf="isLoading" class="animate-pulse">...</span>
+    </button>
+  </div>
+</div>

@@ -10,6 +10,7 @@
       "BUILDER": "Creador"
     },
     "PROFILE": "Mi Perfil",
+    "EVENTS": "Eventos",
     "LOGOUT": "Cerrar Sesión",
     "LOGIN": "Login / Registro"
   },
@@ -228,5 +229,24 @@
       "AUTHOR": "Autor",
       "DATE": "Fecha"
     }
+  },
+  "EVENTS": {
+    "TITLE": "Tablón de Eventos",
+    "SUBTITLE": "Encuentra torneos, quedadas y eventos organizados por la comunidad.",
+    "PUBLISH": "Publicar Evento",
+    "PUBLISH_ACTION": "Publicar",
+    "NO_EVENTS": "No hay eventos publicados en este momento.",
+    "CREATED_BY": "Organizado por",
+    "JOIN": "Unirme",
+    "LEAVE": "Darse de baja",
+    "CREATE_TITLE": "Crear Nuevo Evento",
+    "NAME": "Nombre del Evento",
+    "DESCRIPTION": "Información adicional",
+    "DATE_TIME": "Fecha y Hora",
+    "LOCATION": "Ubicación"
+  },
+  "COMMON": {
+    "CANCEL": "Cancelar",
+    "SAVING": "Guardando..."
   }
 }
