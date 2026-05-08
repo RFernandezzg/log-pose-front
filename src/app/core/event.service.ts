@@ -30,4 +30,8 @@ export class EventService {
   unregisterAttendee(eventId: number): Observable<CommunityEvent> {
     return this.apiClient.post<CommunityEvent>(`${this.endpoint}/${eventId}/unregister`, {});
   }
+
+  deleteEvent(eventId: number): Observable<void> {
+    return this.apiClient.delete<void>(`${this.endpoint}/${eventId}`);
+  }
 }

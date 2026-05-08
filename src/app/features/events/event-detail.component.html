@@ -76,6 +76,15 @@
                   <span class="text-xs font-bold text-slate-300">{{ event.creator.username }}</span>
                 </div>
               </div>
+              
+              <!-- Botón Eliminar (Solo para el creador) -->
+              <button *ngIf="isCreator" 
+                      (click)="onDelete()" 
+                      [disabled]="isDeleting"
+                      class="px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/30 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all">
+                <i class="fas fa-trash-alt mr-2"></i>
+                {{ isDeleting ? 'Eliminando...' : 'Eliminar Evento' }}
+              </button>
             </div>
           </div>
         </div>

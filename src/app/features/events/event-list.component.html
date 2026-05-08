@@ -37,5 +37,6 @@
 <app-event-detail 
   *ngIf="selectedEvent" 
   [event]="selectedEvent" 
-  (close)="selectedEvent = null">
+  (close)="selectedEvent = null"
+  (deleted)="onEventDeleted()">
 </app-event-detail>

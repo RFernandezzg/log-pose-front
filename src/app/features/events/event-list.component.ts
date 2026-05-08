@@ -95,6 +95,11 @@ export class EventListComponent implements OnInit {
     this.loadEvents();
   }
 
+  onEventDeleted(): void {
+    this.selectedEvent = null;
+    this.loadEvents();
+  }
+
   openEventDetails(event: CommunityEvent): void {
     this.selectedEvent = event;
   }
