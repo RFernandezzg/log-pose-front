@@ -5,11 +5,12 @@ import { EventService } from '../../core/event.service';
 import { AuthSessionService } from '../../core/auth-session.service';
 import { AuthUser } from '../../core/auth.models';
 import { TranslateModule } from '@ngx-translate/core';
+import { EventDetailComponent } from './event-detail.component';
 
 @Component({
   selector: 'app-event-card',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, EventDetailComponent],
   templateUrl: './event-card.component.html',
   styles: [`
     .event-card {
@@ -57,6 +58,15 @@ import { TranslateModule } from '@ngx-translate/core';
       background: #334155;
     }
     .avatar:first-child { margin-left: 0; }
+    .badge-full {
+      background: rgba(244, 63, 94, 0.2);
+      color: #fb7185;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
   `]
 })
 export class EventCardComponent implements OnInit {
@@ -66,6 +76,11 @@ export class EventCardComponent implements OnInit {
   currentUsername: string | null = null;
   isAttendee = false;
   isLoading = false;
+  showDetailModal = false;
+
+  get isFull(): boolean {
+    return this.event.attendeeCount >= this.event.maxAttendees;
+  }
 
   constructor(
     private eventService: EventService,
@@ -104,6 +119,10 @@ export class EventCardComponent implements OnInit {
         }
       });
     } else {
+      if (this.isFull) {
+        alert('Este evento ya ha alcanzado el máximo de asistentes.');
+        return;
+      }
       this.eventService.registerAttendee(this.event.id).subscribe({
         next: () => {
           this.isLoading = false;

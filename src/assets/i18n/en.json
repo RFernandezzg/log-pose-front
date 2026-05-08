@@ -243,7 +243,9 @@
     "NAME": "Event Name",
     "DESCRIPTION": "Additional Information",
     "DATE_TIME": "Date and Time",
-    "LOCATION": "Location"
+    "LOCATION": "Location",
+    "MAX_ATTENDEES": "Maximum Attendees",
+    "DETAILS": "Details"
   },
   "COMMON": {
     "CANCEL": "Cancel",

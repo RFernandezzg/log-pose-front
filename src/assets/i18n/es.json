@@ -243,7 +243,9 @@
     "NAME": "Nombre del Evento",
     "DESCRIPTION": "Información adicional",
     "DATE_TIME": "Fecha y Hora",
-    "LOCATION": "Ubicación"
+    "LOCATION": "Ubicación",
+    "MAX_ATTENDEES": "Máximo de Asistentes",
+    "DETAILS": "Detalles"
   },
   "COMMON": {
     "CANCEL": "Cancelar",

@@ -66,11 +66,18 @@ export class EventCreateComponent {
   @Output() close = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
 
+  searchResults: any[] = [];
+  isSearching = false;
+  searchTimeout: any;
+
   eventData = {
     name: '',
     description: '',
     dateTime: '',
-    location: ''
+    location: '',
+    maxAttendees: 0,
+    latitude: 0,
+    longitude: 0
   };
 
   isLoading = false;
@@ -78,8 +85,8 @@ export class EventCreateComponent {
   constructor(private eventService: EventService) {}
 
   onSubmit(): void {
-    if (!this.eventData.name || !this.eventData.dateTime || !this.eventData.location) {
-      alert('Por favor completa los campos obligatorios.');
+    if (!this.eventData.name || !this.eventData.dateTime || !this.eventData.location || this.eventData.maxAttendees <= 0) {
+      alert('Por favor completa los campos obligatorios y asegúrate de que el máximo de asistentes sea mayor a 0.');
       return;
     }
 
@@ -95,5 +102,36 @@ export class EventCreateComponent {
         alert('Error al crear el evento. Intenta nuevamente.');
       }
     });
+  }
+
+  onLocationInput(event: any): void {
+    const query = event.target.value;
+    if (this.searchTimeout) clearTimeout(this.searchTimeout);
+
+    if (query.length < 3) {
+      this.searchResults = [];
+      return;
+    }
+
+    this.searchTimeout = setTimeout(() => {
+      this.isSearching = true;
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+        .then(res => res.json())
+        .then(data => {
+          this.searchResults = data;
+          this.isSearching = false;
+        })
+        .catch(err => {
+          console.error('Error searching location:', err);
+          this.isSearching = false;
+        });
+    }, 500);
+  }
+
+  selectLocation(result: any): void {
+    this.eventData.location = result.display_name;
+    this.eventData.latitude = parseFloat(result.lat);
+    this.eventData.longitude = parseFloat(result.lon);
+    this.searchResults = [];
   }
 }

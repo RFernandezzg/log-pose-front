@@ -23,10 +23,37 @@
           <label>{{ 'EVENTS.DATE_TIME' | translate }} *</label>
           <input type="datetime-local" [(ngModel)]="eventData.dateTime" name="dateTime" required>
         </div>
-        <div class="form-group">
+        <div class="form-group relative">
           <label>{{ 'EVENTS.LOCATION' | translate }} *</label>
-          <input type="text" [(ngModel)]="eventData.location" name="location" required placeholder="Ciudad, lugar...">
+          <input 
+            type="text" 
+            [(ngModel)]="eventData.location" 
+            name="location" 
+            required 
+            placeholder="Escribe para buscar ubicación..."
+            (input)="onLocationInput($event)"
+            autocomplete="off">
+          
+          <!-- Autocomplete Dropdown -->
+          <div *ngIf="searchResults.length > 0" class="absolute left-0 right-0 top-full mt-1 bg-[#1d2269] border border-gold/30 rounded-xl shadow-2xl z-[1100] overflow-hidden">
+            <button 
+              type="button"
+              *ngFor="let result of searchResults" 
+              (click)="selectLocation(result)"
+              class="w-full text-left px-4 py-3 text-xs text-slate-200 hover:bg-gold/10 transition-colors border-b border-white/5 last:border-0">
+              <i class="fas fa-map-marker-alt text-gold mr-2"></i>
+              {{ result.display_name }}
+            </button>
+          </div>
+          <div *ngIf="isSearching" class="absolute right-3 top-9">
+            <div class="animate-spin h-4 w-4 border-2 border-gold border-t-transparent rounded-full"></div>
+          </div>
         </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'EVENTS.MAX_ATTENDEES' | translate }} *</label>
+        <input type="number" [(ngModel)]="eventData.maxAttendees" name="maxAttendees" required min="1" placeholder="Ej: 16">
       </div>
 
       <div class="mt-10 flex gap-4">

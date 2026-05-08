@@ -4,6 +4,9 @@ export interface CommunityEvent {
   description: string;
   dateTime: string;
   location: string;
+  maxAttendees: number;
+  latitude?: number;
+  longitude?: number;
   creator: Creator;
   attendees: Attendee[];
   attendeeCount: number;
@@ -26,4 +29,7 @@ export interface EventRequest {
   description: string;
   dateTime: string;
   location: string;
+  maxAttendees: number;
+  latitude: number;
+  longitude: number;
 }

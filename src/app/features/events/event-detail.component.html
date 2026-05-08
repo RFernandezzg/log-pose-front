@@ -1,0 +1,85 @@
+<div class="modal-overlay" (click)="close.emit()">
+  <div class="modal-content max-w-5xl" (click)="$event.stopPropagation()">
+    <div class="flex justify-between items-center mb-6">
+      <div class="flex items-center gap-4">
+        <div class="bg-gold/10 p-3 rounded-2xl">
+          <i class="fas fa-calendar-alt text-2xl text-gold"></i>
+        </div>
+        <div>
+          <h2 class="text-3xl font-black text-white uppercase tracking-tighter">{{ event.name }}</h2>
+          <p class="text-slate-400 text-sm flex items-center gap-2">
+            <i class="fas fa-map-marker-alt text-gold"></i> {{ event.location }}
+          </p>
+        </div>
+      </div>
+      <button (click)="close.emit()" class="text-slate-400 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full">
+        <i class="fas fa-times text-2xl"></i>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Columna Izquierda: Info y Mapa -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white/5 border border-white/5 rounded-3xl p-6">
+          <h3 class="text-xs font-bold text-gold uppercase tracking-widest mb-4">Información del Evento</h3>
+          <p class="text-slate-300 leading-relaxed mb-6">{{ event.description }}</p>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-black/20 p-4 rounded-2xl border border-white/5">
+              <span class="text-[10px] text-slate-500 uppercase tracking-widest block mb-1">Fecha y Hora</span>
+              <span class="text-sm font-bold text-slate-200">{{ formatDate(event.dateTime) }}</span>
+            </div>
+            <div class="bg-black/20 p-4 rounded-2xl border border-white/5">
+              <span class="text-[10px] text-slate-500 uppercase tracking-widest block mb-1">Capacidad</span>
+              <span class="text-sm font-bold" [class.text-rose-400]="event.attendeeCount >= event.maxAttendees" [class.text-gold]="event.attendeeCount < event.maxAttendees">
+                {{ event.attendeeCount }} / {{ event.maxAttendees }} Plazas
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-container rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
+          <div id="detail-map" class="h-[350px] w-full"></div>
+          <div *ngIf="!event.latitude" class="absolute inset-0 flex flex-col items-center justify-center bg-dark-surface/80 backdrop-blur-sm">
+            <i class="fas fa-map-marked-alt text-4xl text-slate-600 mb-3"></i>
+            <p class="text-slate-400">Ubicación no disponible en el mapa</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Asistentes -->
+      <div class="space-y-6">
+        <div class="bg-white/5 border border-white/5 rounded-3xl p-6 h-full flex flex-col">
+          <h3 class="text-xs font-bold text-gold uppercase tracking-widest mb-4">Asistentes ({{ event.attendeeCount }})</h3>
+          
+          <div class="flex-grow overflow-y-auto pr-2 custom-scrollbar space-y-3">
+            <div *ngFor="let attendee of event.attendees" class="flex items-center gap-3 p-3 rounded-2xl bg-black/20 border border-white/5 hover:border-gold/30 transition-all group">
+              <img [src]="attendee.avatarUrl || 'assets/default-avatar.png'" class="w-10 h-10 rounded-full border border-white/10 group-hover:border-gold/50 transition-colors">
+              <div class="flex flex-col">
+                <span class="text-sm font-bold text-slate-200">{{ attendee.username }}</span>
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest">Pirata</span>
+              </div>
+            </div>
+
+            <div *ngIf="event.attendeeCount === 0" class="flex flex-col items-center justify-center py-10 opacity-40">
+              <i class="fas fa-users-slash text-4xl mb-3"></i>
+              <p class="text-xs italic text-center">Nadie se ha unido todavía...</p>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-6 border-t border-white/10">
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col">
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest block mb-1">Organizado por</span>
+                <div class="flex items-center gap-2">
+                  <img [src]="event.creator.avatarUrl || 'assets/default-avatar.png'" class="w-6 h-6 rounded-full">
+                  <span class="text-xs font-bold text-slate-300">{{ event.creator.username }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
