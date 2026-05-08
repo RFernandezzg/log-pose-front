@@ -67,6 +67,12 @@ import { TranslateModule } from '@ngx-translate/core';
                   </label>
                   <p class="text-[10px] text-slate-500">{{ 'AUTH.PROFILE.IMAGE_HELP' | translate }}</p>
                 </div>
+                
+                <!-- Avatar Error Message -->
+                <div *ngIf="avatarError" class="text-[10px] font-bold text-rose-400 animate-in fade-in slide-in-from-top-1 px-1">
+                  ⚠️ {{ avatarError }}
+                </div>
+
                 <div *ngIf="selectedFile" class="flex items-center gap-2">
                   <span class="text-[10px] font-medium text-slate-300 truncate max-w-[150px]">{{ selectedFile.name }}</span>
                   <button type="button" (click)="uploadAvatar()" [disabled]="uploading"
@@ -175,6 +181,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   username = '';
   avatarUrl = '';
   selectedFile: File | null = null;
+  avatarError = '';
   isDragOver = false;
 
   isTotpEnabled = false;
@@ -278,6 +285,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     this.selectedFile = file;
     this.error = '';
+    this.avatarError = '';
     this.success = false;
   }
 
@@ -286,6 +294,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     this.uploading = true;
     this.error = '';
+    this.avatarError = '';
     this.success = false;
 
     this.auth.uploadAvatar(this.selectedFile).pipe(takeUntil(this.destroy$)).subscribe({
@@ -309,7 +318,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.uploading = false;
-        this.error = err?.error?.message ?? 'Error al subir el avatar.';
+        const msg = err?.error?.message ?? 'Error al subir el avatar.';
+        if (msg === 'Ese es tu avatar actual') {
+          this.avatarError = msg;
+        } else {
+          this.error = msg;
+        }
       }
     });
   }
