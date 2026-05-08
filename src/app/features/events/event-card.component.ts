@@ -5,12 +5,11 @@ import { EventService } from '../../core/event.service';
 import { AuthSessionService } from '../../core/auth-session.service';
 import { AuthUser } from '../../core/auth.models';
 import { TranslateModule } from '@ngx-translate/core';
-import { EventDetailComponent } from './event-detail.component';
 
 @Component({
   selector: 'app-event-card',
   standalone: true,
-  imports: [CommonModule, TranslateModule, EventDetailComponent],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './event-card.component.html',
   styles: [`
     .event-card {
@@ -72,11 +71,11 @@ import { EventDetailComponent } from './event-detail.component';
 export class EventCardComponent implements OnInit {
   @Input() event!: CommunityEvent;
   @Output() statusChanged = new EventEmitter<void>();
+  @Output() viewDetails = new EventEmitter<CommunityEvent>();
 
   currentUsername: string | null = null;
   isAttendee = false;
   isLoading = false;
-  showDetailModal = false;
 
   get isFull(): boolean {
     return this.event.attendeeCount >= this.event.maxAttendees;

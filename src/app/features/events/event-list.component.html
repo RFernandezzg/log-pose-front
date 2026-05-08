@@ -22,7 +22,8 @@
     <app-event-card 
       *ngFor="let event of events" 
       [event]="event"
-      (statusChanged)="loadEvents()">
+      (statusChanged)="loadEvents()"
+      (viewDetails)="openEventDetails($event)">
     </app-event-card>
   </div>
 </div>
@@ -32,3 +33,9 @@
   (close)="showCreateModal = false"
   (created)="onEventCreated()">
 </app-event-create>
+
+<app-event-detail 
+  *ngIf="selectedEvent" 
+  [event]="selectedEvent" 
+  (close)="selectedEvent = null">
+</app-event-detail>

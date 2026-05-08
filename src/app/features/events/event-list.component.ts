@@ -6,13 +6,14 @@ import { CommunityEvent } from '../../core/models/event.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { EventCardComponent } from './event-card.component';
 import { EventCreateComponent } from './event-create.component';
+import { EventDetailComponent } from './event-detail.component';
 import { AuthSessionService } from '../../core/auth-session.service';
 import { AuthUser } from '../../core/auth.models';
 
 @Component({
   selector: 'app-event-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule, EventCardComponent, EventCreateComponent],
+  imports: [CommonModule, RouterModule, TranslateModule, EventCardComponent, EventCreateComponent, EventDetailComponent],
   templateUrl: './event-list.component.html',
   styles: [`
     .events-grid {
@@ -51,6 +52,7 @@ export class EventListComponent implements OnInit {
   events: CommunityEvent[] = [];
   isLoading = true;
   showCreateModal = false;
+  selectedEvent: CommunityEvent | null = null;
   isLoggedIn = false;
 
   constructor(
@@ -91,5 +93,9 @@ export class EventListComponent implements OnInit {
   onEventCreated(): void {
     this.showCreateModal = false;
     this.loadEvents();
+  }
+
+  openEventDetails(event: CommunityEvent): void {
+    this.selectedEvent = event;
   }
 }

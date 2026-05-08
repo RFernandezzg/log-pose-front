@@ -14,7 +14,7 @@
 
   <div class="event-body">
     <p class="text-slate-300 text-sm mb-4 line-clamp-3">{{ event.description }}</p>
-    
+
     <div class="space-y-2">
       <div class="flex items-center text-slate-400 text-sm">
         <i class="fas fa-calendar-day mr-2 text-gold"></i>
@@ -22,32 +22,29 @@
       </div>
       <div class="flex items-center text-slate-400 text-sm">
         <i class="fas fa-user-circle mr-2 text-gold"></i>
-        {{ 'EVENTS.CREATED_BY' | translate }}: <span class="text-white ml-1 font-medium">{{ event.creator.username }}</span>
+        {{ 'EVENTS.CREATED_BY' | translate }}: <span class="text-white ml-1 font-medium">{{ event.creator.username
+          }}</span>
       </div>
     </div>
   </div>
 
   <div class="event-footer">
-    <div class="avatar-stack cursor-pointer" (click)="showDetailModal = true">
-      <img 
-        *ngFor="let attendee of event.attendees | slice:0:5" 
-        [src]="attendee.avatarUrl || 'assets/default-avatar.png'" 
-        class="avatar" 
-        [title]="attendee.username">
-      <div *ngIf="event.attendeeCount > 5" class="avatar flex items-center justify-center text-[10px] text-white bg-slate-700">
+    <div class="avatar-stack cursor-pointer" (click)="viewDetails.emit(event)">
+      <img *ngFor="let attendee of event.attendees | slice:0:5"
+        [src]="attendee.avatarUrl || 'assets/default-avatar.png'" class="avatar" [title]="attendee.username">
+      <div *ngIf="event.attendeeCount > 5"
+        class="avatar flex items-center justify-center text-[10px] text-white bg-slate-700">
         +{{ event.attendeeCount - 5 }}
       </div>
     </div>
 
     <div class="flex gap-2">
-      <button (click)="showDetailModal = true" 
-              class="px-3 py-2 rounded-xl text-xs font-bold uppercase border border-white/10 hover:bg-white/5 transition-all">
+      <button (click)="viewDetails.emit(event)"
+        class="px-3 py-2 rounded-xl text-xs font-bold uppercase border border-white/10 hover:bg-white/5 transition-all">
         {{ 'EVENTS.DETAILS' | translate }}
       </button>
 
-      <button 
-        (click)="toggleRegistration()"
-        [disabled]="isLoading || (isFull && !isAttendee)"
+      <button (click)="toggleRegistration()" [disabled]="isLoading || (isFull && !isAttendee)"
         [ngClass]="isAttendee ? 'bg-red-500/20 text-red-500 border border-red-500/50 hover:bg-red-500/30' : (isFull ? 'bg-slate-700 text-slate-400 cursor-not-allowed' : 'bg-gold-gradient text-dark-blue')"
         class="px-5 py-2 rounded-xl text-sm font-bold uppercase transition-all duration-300 disabled:opacity-50">
         <span *ngIf="!isLoading">
@@ -57,11 +54,4 @@
       </button>
     </div>
   </div>
-
-  <!-- Modal de Detalles -->
-  <app-event-detail 
-    *ngIf="showDetailModal" 
-    [event]="event" 
-    (close)="showDetailModal = false">
-  </app-event-detail>
 </div>
