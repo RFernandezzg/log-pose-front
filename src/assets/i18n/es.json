@@ -164,6 +164,7 @@
     "POWER": "Poder",
     "LIFE": "Vida",
     "ATTRIBUTE": "Atributo",
+    "ARCHETYPE": "Arquetipo",
     "RESULTS": "resultados encontrados",
     "NO_RESULTS": "No se han encontrado cartas con los filtros seleccionados.",
     "LOADING": "Cargando cartas...",

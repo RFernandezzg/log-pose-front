@@ -44,6 +44,12 @@
                     class="mt-2 w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-4 py-3 text-sm text-white focus:border-[#857752]/50 outline-none transition-all" />
                 </div>
                 <div>
+                  <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.ARCHETYPE'
+                    | translate }}</label>
+                  <input formControlName="subTypes" [placeholder]="'Ej: Mugiwara, Navy...'"
+                    class="mt-2 w-full rounded-2xl border border-white/5 bg-[#0b0d2a]/50 px-4 py-3 text-sm text-white focus:border-[#857752]/50 outline-none transition-all" />
+                </div>
+                <div>
                   <label class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ 'CARDS.SET' |
                     translate }}</label>
                   <select formControlName="set"
@@ -379,10 +385,11 @@
 
           <div class="grid grid-cols-2 gap-4">
             <div *ngFor="let item of [
-               {l: 'CARDS.TYPE', v: detailCard.type},
-               {l: 'CARDS.COLOR', v: detailCard.color},
-               {l: 'CARDS.COST', v: detailCard.cost},
-               {l: 'CARDS.POWER', v: detailCard.power}
+                {l: 'CARDS.TYPE', v: detailCard.type},
+                {l: 'CARDS.COLOR', v: detailCard.color},
+                {l: 'CARDS.COST', v: detailCard.cost},
+                {l: 'CARDS.POWER', v: detailCard.power},
+                {l: 'CARDS.ARCHETYPE', v: detailCard.subTypes?.join(' / ')}
              ]" class="rounded-[1.5rem] bg-[#0b0d2a]/40 border border-white/5 p-4 space-y-0.5">
               <span class="text-[10px] font-black uppercase tracking-widest text-[#857752]">{{ item.l | translate
                 }}</span>

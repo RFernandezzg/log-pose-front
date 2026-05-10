@@ -164,6 +164,7 @@
     "POWER": "Power",
     "LIFE": "Life",
     "ATTRIBUTE": "Attribute",
+    "ARCHETYPE": "Archetype",
     "RESULTS": "results found",
     "NO_RESULTS": "No cards found with the selected filters.",
     "LOADING": "Loading cards...",
