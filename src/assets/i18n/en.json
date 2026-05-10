@@ -225,6 +225,7 @@
       "EXPORT_IMAGE": "Image (PNG)",
       "EXPORT_PDF": "Document (PDF)",
       "COPIED": "Copied to clipboard!",
+      "COPY": "Copy Deck",
       "DESCRIPTION": "Captain Description",
       "AUTHOR": "Author",
       "DATE": "Date"
