@@ -5,7 +5,7 @@ import { DeckSummary, DeckDetail, DeckRequest, PageResponse } from './models/dec
 
 @Injectable({ providedIn: 'root' })
 export class DeckService {
-  constructor(private api: ApiClientService) {}
+  constructor(private api: ApiClientService) { }
 
   getPublicDecks(
     page: number = 0,
@@ -14,17 +14,8 @@ export class DeckService {
     color?: string,
     sort?: string
   ): Observable<PageResponse<DeckSummary>> {
-    let url = `/decks?page=${page}&size=${size}`;
-    if (leaderCardId) {
-      url += `&leaderCardId=${leaderCardId}`;
-    }
-    if (color) {
-      url += `&color=${color}`;
-    }
-    if (sort) {
-      url += `&sort=${sort}`;
-    }
-    return this.api.get<PageResponse<DeckSummary>>(url);
+    const params = { page, size, leaderCardId, color, sort };
+    return this.api.get<PageResponse<DeckSummary>>('/decks', params);
   }
 
   getMyDecks(): Observable<DeckSummary[]> {

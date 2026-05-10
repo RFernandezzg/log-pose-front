@@ -15,8 +15,7 @@ export class CardsService {
   ) { }
 
   getAllSets(): Observable<unknown[]> {
-    // Call external Optcg API directly to list sets
-    return this.http.get<unknown[]>('https://www.optcgapi.com/api/allSets/');
+    return this.api.get<unknown[]>('/cards/sets');
   }
 
   preloadAllCards(forceRefresh = false): Observable<ExternalCardDto[]> {
