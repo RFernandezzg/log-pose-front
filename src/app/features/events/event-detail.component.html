@@ -67,6 +67,18 @@
             </div>
           </div>
 
+          <!-- Botón de Unirse/Abandonar -->
+          <div class="mt-4" *ngIf="!isCreator">
+            <button (click)="toggleRegistration()" 
+                    [disabled]="isLoading"
+                    class="w-full py-3.5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl flex items-center justify-center gap-2"
+                    [ngClass]="isAttendee ? 'bg-rose-500/10 text-rose-500 border border-rose-500/30 hover:bg-rose-500 hover:text-white' : 'bg-gold text-black hover:bg-[#a3946b] hover:text-white shadow-gold/20'">
+              <i class="fas" [ngClass]="isLoading ? 'fa-spinner fa-spin' : (isAttendee ? 'fa-user-minus' : 'fa-user-plus')"></i>
+              <span>{{ isLoading ? 'Procesando...' : (isAttendee ? 'Abandonar Evento' : 'Unirse al Evento') }}</span>
+            </button>
+            <p *ngIf="isFull && !isAttendee" class="text-[10px] text-rose-400 text-center mt-2 font-bold uppercase tracking-widest">¡Evento lleno!</p>
+          </div>
+
           <div class="mt-6 pt-6 border-t border-white/10">
             <div class="flex items-center justify-between">
               <div class="flex flex-col">

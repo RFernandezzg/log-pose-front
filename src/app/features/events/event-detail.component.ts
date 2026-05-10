@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { CommunityEvent } from '../../core/models/event.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthSessionService } from '../../core/auth-session.service';
+import { AuthUser } from '../../core/auth.models';
 import { EventService } from '../../core/event.service';
+import { Router } from '@angular/router';
 import * as L from 'leaflet';
 import { ModalService } from '../../core/modal.service';
 
@@ -18,21 +20,80 @@ export class EventDetailComponent implements AfterViewInit, OnDestroy {
   @Input() event!: CommunityEvent;
   @Output() close = new EventEmitter<void>();
   @Output() deleted = new EventEmitter<void>();
+  @Output() statusChanged = new EventEmitter<void>();
 
   private map?: L.Map;
   isCreator = false;
   isDeleting = false;
+  isAttendee = false;
+  isLoading = false;
+  currentUsername: string | null = null;
 
   constructor(
     private session: AuthSessionService,
     private eventService: EventService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.session.user$.subscribe(user => {
+      this.currentUsername = user?.username || null;
       this.isCreator = user?.username === this.event.creator.username;
+      this.checkIfAttendee();
     });
+  }
+
+  checkIfAttendee(): void {
+    if (this.currentUsername && this.event.attendees) {
+      this.isAttendee = this.event.attendees.some(a => a.username === this.currentUsername);
+    }
+  }
+
+  toggleRegistration(): void {
+    if (!this.currentUsername) {
+      this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+
+    this.isLoading = true;
+    if (this.isAttendee) {
+      this.eventService.unregisterAttendee(this.event.id).subscribe({
+        next: () => {
+          this.isLoading = false;
+          // Refresh event data or notify parent
+          this.statusChanged.emit();
+        },
+        error: (err) => {
+          console.error('Error unregistering:', err);
+          this.isLoading = false;
+        }
+      });
+    } else {
+      if (this.isFull) {
+        this.modalService.show({
+          title: 'Evento Lleno',
+          message: 'Este evento ya ha alcanzado el máximo de asistentes.',
+          type: 'info'
+        });
+        this.isLoading = false;
+        return;
+      }
+      this.eventService.registerAttendee(this.event.id).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.statusChanged.emit();
+        },
+        error: (err) => {
+          console.error('Error registering:', err);
+          this.isLoading = false;
+        }
+      });
+    }
+  }
+
+  get isFull(): boolean {
+    return this.event.attendeeCount >= this.event.maxAttendees;
   }
 
   ngAfterViewInit(): void {

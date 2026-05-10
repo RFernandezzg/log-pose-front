@@ -103,6 +103,19 @@ export class EventListComponent implements OnInit {
     this.loadEvents();
   }
 
+  onStatusChanged(): void {
+    const selectedId = this.selectedEvent?.id;
+    this.eventService.getAllEvents().subscribe({
+      next: (events) => {
+        this.events = events;
+        if (selectedId) {
+          this.selectedEvent = events.find(e => e.id === selectedId) || null;
+        }
+      },
+      error: (err) => console.error('Error refreshing events:', err)
+    });
+  }
+
   openEventDetails(event: CommunityEvent): void {
     this.selectedEvent = event;
   }
