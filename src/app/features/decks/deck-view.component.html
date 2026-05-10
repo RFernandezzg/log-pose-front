@@ -1,7 +1,7 @@
 <section *ngIf="deck" class="space-y-10 pb-20 animate-in fade-in duration-700">
   <!-- Header con gradiente dinámico -->
-  <header class="relative overflow-hidden rounded-[3rem] p-10 lg:p-16 shadow-2xl" [ngStyle]="getHeaderGradient()">
-    <div class="absolute inset-0 bg-gradient-to-br from-black/60 via-transparent to-black/40"></div>
+  <header class="relative z-10 rounded-[3rem] p-10 lg:p-16 shadow-2xl" [ngStyle]="getHeaderGradient()">
+    <div class="absolute inset-0 bg-gradient-to-br from-black/60 via-transparent to-black/40 rounded-[3rem]"></div>
     <div class="absolute -right-20 -top-20 h-96 w-96 rounded-full bg-white/10 blur-[100px]"></div>
 
     <div class="relative flex flex-col lg:flex-row items-center gap-12">
