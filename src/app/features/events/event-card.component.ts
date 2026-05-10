@@ -6,6 +6,7 @@ import { AuthSessionService } from '../../core/auth-session.service';
 import { AuthUser } from '../../core/auth.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { ModalService } from '../../core/modal.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-event-card',
@@ -85,7 +86,8 @@ export class EventCardComponent implements OnInit {
   constructor(
     private eventService: EventService,
     private session: AuthSessionService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -103,11 +105,7 @@ export class EventCardComponent implements OnInit {
 
   toggleRegistration(): void {
     if (!this.currentUsername) {
-      this.modalService.show({
-        title: 'Acceso Denegado',
-        message: 'Debes estar registrado para unirte a un evento.',
-        type: 'warning'
-      });
+      this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.router.url } });
       return;
     }
 
