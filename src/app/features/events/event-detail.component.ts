@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CommunityEvent } from '../../core/models/event.models';
 import { TranslateModule } from '@ngx-translate/core';
@@ -16,7 +16,7 @@ import { ModalService } from '../../core/modal.service';
   templateUrl: './event-detail.component.html',
   styleUrls: ['./event-detail.component.scss']
 })
-export class EventDetailComponent implements AfterViewInit, OnDestroy {
+export class EventDetailComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @Input() event!: CommunityEvent;
   @Output() close = new EventEmitter<void>();
   @Output() deleted = new EventEmitter<void>();
@@ -39,14 +39,28 @@ export class EventDetailComponent implements AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.session.user$.subscribe(user => {
       this.currentUsername = user?.username || null;
-      this.isCreator = user?.username === this.event.creator.username;
-      this.checkIfAttendee();
+      this.updateState();
     });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['event']) {
+      this.updateState();
+    }
+  }
+
+  private updateState(): void {
+    if (this.event) {
+      this.isCreator = this.currentUsername === this.event.creator.username;
+      this.checkIfAttendee();
+    }
+  }
+
   checkIfAttendee(): void {
-    if (this.currentUsername && this.event.attendees) {
+    if (this.currentUsername && this.event?.attendees) {
       this.isAttendee = this.event.attendees.some(a => a.username === this.currentUsername);
+    } else {
+      this.isAttendee = false;
     }
   }
 
