@@ -1,4 +1,4 @@
-# OPTCG Deck Builder — Guía de Estructura para Agentes IA
+# LogPose — Guía de Estructura para Agentes IA
 
 > Última actualización: 2026-05-06  
 > Stack: Angular 17+ (standalone), TailwindCSS, Spring Boot backend (Java)

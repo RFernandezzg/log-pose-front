@@ -1,4 +1,4 @@
-# Dependencias Externas — OPTCG Deck Builder
+# Dependencias Externas — LogPose
 
 ## jspdf (v3+)
 - **Paquete npm**: `jspdf`

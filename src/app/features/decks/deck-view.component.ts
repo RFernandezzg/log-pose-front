@@ -15,7 +15,7 @@ interface CardWithQuantity extends ExternalCardDto {
   quantity: number;
 }
 
-const WATERMARK = 'OPTCG Deck Builder';
+const WATERMARK = 'LogPose';
 
 import { TranslateModule } from '@ngx-translate/core';
 

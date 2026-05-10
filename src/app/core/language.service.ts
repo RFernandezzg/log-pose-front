@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
   providedIn: 'root'
 })
 export class LanguageService {
-  private readonly LANG_KEY = 'optcg_lang';
+  private readonly LANG_KEY = 'logpose_lang';
 
   constructor(private translate: TranslateService) {
     const savedLang = localStorage.getItem(this.LANG_KEY) || 'es';

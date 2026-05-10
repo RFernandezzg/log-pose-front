@@ -13,7 +13,7 @@ export class CartService {
   constructor() {}
 
   private loadCartFromStorage(): CartItem[] {
-    const saved = localStorage.getItem('optcg_cart');
+    const saved = localStorage.getItem('logpose_cart');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -25,7 +25,7 @@ export class CartService {
   }
 
   private saveCartToStorage(items: CartItem[]): void {
-    localStorage.setItem('optcg_cart', JSON.stringify(items));
+    localStorage.setItem('logpose_cart', JSON.stringify(items));
     this.cartItems.next(items);
   }
 
