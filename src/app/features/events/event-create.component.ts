@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EventService } from '../../core/event.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { ModalService } from '../../core/modal.service';
 
 @Component({
   selector: 'app-event-create',
@@ -82,11 +83,18 @@ export class EventCreateComponent {
 
   isLoading = false;
 
-  constructor(private eventService: EventService) {}
+  constructor(
+    private eventService: EventService,
+    private modalService: ModalService
+  ) {}
 
   onSubmit(): void {
     if (!this.eventData.name || !this.eventData.dateTime || !this.eventData.location || this.eventData.maxAttendees <= 0) {
-      alert('Por favor completa los campos obligatorios y asegúrate de que el máximo de asistentes sea mayor a 0.');
+      this.modalService.show({
+        title: 'Formulario Incompleto',
+        message: 'Por favor completa los campos obligatorios y asegúrate de que el máximo de asistentes sea mayor a 0.',
+        type: 'warning'
+      });
       return;
     }
 
@@ -99,7 +107,11 @@ export class EventCreateComponent {
       error: (err) => {
         console.error('Error creating event:', err);
         this.isLoading = false;
-        alert('Error al crear el evento. Intenta nuevamente.');
+        this.modalService.show({
+          title: 'Error',
+          message: 'Error al crear el evento. Intenta nuevamente.',
+          type: 'error'
+        });
       }
     });
   }

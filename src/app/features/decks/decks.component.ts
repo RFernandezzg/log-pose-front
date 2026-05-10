@@ -9,6 +9,7 @@ import { DeckSummary } from '../../core/models/deck.models';
 import { ExternalCardDto } from '../cards/cards.models';
 
 import { TranslateModule } from '@ngx-translate/core';
+import { ModalService } from '../../core/modal.service';
 
 @Component({
   selector: 'app-decks',
@@ -32,7 +33,8 @@ export class DecksComponent implements OnInit {
     private deckService: DeckService,
     private cardsService: CardsService,
     public colorUtils: ColorUtilsService,
-    private router: Router
+    private router: Router,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -84,17 +86,31 @@ export class DecksComponent implements OnInit {
   navigateToBuild(): void { this.router.navigate(['/decks/build']); }
 
   deleteDeck(deckId: number, deckName: string): void {
-    if (confirm(`¿Estás seguro de que deseas eliminar el mazo "${deckName}"?`)) {
-      this.deckService.deleteDeck(deckId).subscribe({
-        next: () => {
-          this.myDecks = this.myDecks.filter(d => d.id !== deckId);
-          alert('Mazo eliminado correctamente.');
-        },
-        error: (err: any) => {
-          console.error('Error deleting deck:', err);
-          alert('Error al eliminar el mazo.');
-        }
-      });
-    }
+    this.modalService.show({
+      title: 'Eliminar Mazo',
+      message: `¿Estás seguro de que deseas eliminar el mazo "${deckName}"?`,
+      type: 'warning',
+      showCancel: true,
+      onConfirm: () => {
+        this.deckService.deleteDeck(deckId).subscribe({
+          next: () => {
+            this.myDecks = this.myDecks.filter(d => d.id !== deckId);
+            this.modalService.show({
+              title: 'Éxito',
+              message: 'Mazo eliminado correctamente.',
+              type: 'success'
+            });
+          },
+          error: (err: any) => {
+            console.error('Error deleting deck:', err);
+            this.modalService.show({
+              title: 'Error',
+              message: 'Error al eliminar el mazo.',
+              type: 'error'
+            });
+          }
+        });
+      }
+    });
   }
 }

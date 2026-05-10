@@ -6,6 +6,7 @@ import { AuthService } from '../../core/auth.service';
 import { AuthSessionService } from '../../core/auth-session.service';
 import { UpdateProfileRequest } from '../../core/auth.models';
 import { TranslateModule } from '@ngx-translate/core';
+import { ModalService } from '../../core/modal.service';
 
 @Component({
   selector: 'app-profile',
@@ -203,7 +204,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
-    private session: AuthSessionService
+    private session: AuthSessionService,
+    private modalService: ModalService
   ) { }
 
   ngOnInit(): void {
@@ -381,26 +383,32 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   disableTotp(): void {
-    if (!confirm('¿Estás seguro de que quieres desactivar la autenticación en 2 pasos?')) return;
+    this.modalService.show({
+      title: 'Desactivar 2FA',
+      message: '¿Estás seguro de que quieres desactivar la autenticación en 2 pasos?',
+      type: 'warning',
+      showCancel: true,
+      onConfirm: () => {
+        this.totpLoading = true;
+        this.error = '';
 
-    this.totpLoading = true;
-    this.error = '';
+        this.auth.disableTotp().pipe(takeUntil(this.destroy$)).subscribe({
+          next: () => {
+            this.success = true;
+            this.isTotpEnabled = false;
+            this.totpLoading = false;
 
-    this.auth.disableTotp().pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => {
-        this.success = true;
-        this.isTotpEnabled = false;
-        this.totpLoading = false;
-
-        // Actualizar sesión
-        const currentUser = this.session.user;
-        if (currentUser) {
-          this.session.updateUser({ ...currentUser, isTotpEnabled: false } as any);
-        }
-      },
-      error: (err) => {
-        this.error = 'No se pudo desactivar el 2FA.';
-        this.totpLoading = false;
+            // Actualizar sesión
+            const currentUser = this.session.user;
+            if (currentUser) {
+              this.session.updateUser({ ...currentUser, isTotpEnabled: false } as any);
+            }
+          },
+          error: (err) => {
+            this.error = 'No se pudo desactivar el 2FA.';
+            this.totpLoading = false;
+          }
+        });
       }
     });
   }

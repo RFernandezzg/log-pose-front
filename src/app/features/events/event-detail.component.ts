@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthSessionService } from '../../core/auth-session.service';
 import { EventService } from '../../core/event.service';
 import * as L from 'leaflet';
+import { ModalService } from '../../core/modal.service';
 
 @Component({
   selector: 'app-event-detail',
@@ -24,7 +25,8 @@ export class EventDetailComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private session: AuthSessionService,
-    private eventService: EventService
+    private eventService: EventService,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -78,20 +80,30 @@ export class EventDetailComponent implements AfterViewInit, OnDestroy {
   }
 
   onDelete(): void {
-    if (confirm('¿Estás seguro de que deseas eliminar este evento? Se notificará a todos los asistentes.')) {
-      this.isDeleting = true;
-      this.eventService.deleteEvent(this.event.id).subscribe({
-        next: () => {
-          this.isDeleting = false;
-          this.deleted.emit();
-        },
-        error: (err) => {
-          console.error('Error deleting event:', err);
-          this.isDeleting = false;
-          alert('Error al eliminar el evento.');
-        }
-      });
-    }
+    this.modalService.show({
+      title: 'Eliminar Evento',
+      message: '¿Estás seguro de que deseas eliminar este evento? Se notificará a todos los asistentes.',
+      type: 'warning',
+      showCancel: true,
+      onConfirm: () => {
+        this.isDeleting = true;
+        this.eventService.deleteEvent(this.event.id).subscribe({
+          next: () => {
+            this.isDeleting = false;
+            this.deleted.emit();
+          },
+          error: (err) => {
+            console.error('Error deleting event:', err);
+            this.isDeleting = false;
+            this.modalService.show({
+              title: 'Error',
+              message: 'Error al eliminar el evento.',
+              type: 'error'
+            });
+          }
+        });
+      }
+    });
   }
 
   formatDate(dateString: string): string {

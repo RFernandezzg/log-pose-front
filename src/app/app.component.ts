@@ -6,10 +6,12 @@ import { AuthSessionService } from './core/auth-session.service';
 import { AuthService } from './core/auth.service';
 import { LanguageService } from './core/language.service';
 
+import { ModalComponent } from './shared/components/modal/modal.component';
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, RouterModule, TranslateModule],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, RouterModule, TranslateModule, ModalComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

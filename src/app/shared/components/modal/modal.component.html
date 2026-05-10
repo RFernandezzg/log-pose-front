@@ -1,0 +1,38 @@
+<div *ngIf="display === 'open'" 
+     class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+     [@fadeInOut]>
+    
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" (click)="close()"></div>
+
+    <!-- Modal Content -->
+    <div *ngIf="options" 
+         class="relative w-full max-w-md overflow-hidden rounded-2xl border border-white/10 bg-slate-900/90 shadow-2xl backdrop-blur-md"
+         [@modalScale]>
+        
+        <!-- Header / Icon -->
+        <div class="flex flex-col items-center p-8 text-center">
+            <div [class]="'mb-4 flex h-16 w-16 items-center justify-center rounded-full border ' + getTypeClasses()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="getIcon()" />
+                </svg>
+            </div>
+
+            <h3 class="mb-2 text-2xl font-bold text-white">{{ options.title }}</h3>
+            <p class="text-slate-400">{{ options.message }}</p>
+        </div>
+
+        <!-- Footer / Action -->
+        <div class="flex gap-3 border-t border-white/5 p-4 bg-white/5">
+            <button *ngIf="options.showCancel"
+                    (click)="cancel()" 
+                    class="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 font-semibold text-slate-300 transition-all hover:bg-white/10 active:scale-[0.98]">
+                {{ options.cancelText || 'Cancelar' }}
+            </button>
+            <button (click)="confirm()" 
+                    class="flex-1 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 font-semibold text-white transition-all hover:from-blue-500 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] active:scale-[0.98]">
+                {{ options.confirmText || 'Aceptar' }}
+            </button>
+        </div>
+    </div>
+</div>

@@ -9,6 +9,7 @@ import { EventCreateComponent } from './event-create.component';
 import { EventDetailComponent } from './event-detail.component';
 import { AuthSessionService } from '../../core/auth-session.service';
 import { AuthUser } from '../../core/auth.models';
+import { ModalService } from '../../core/modal.service';
 
 @Component({
   selector: 'app-event-list',
@@ -57,7 +58,8 @@ export class EventListComponent implements OnInit {
 
   constructor(
     private eventService: EventService,
-    private session: AuthSessionService
+    private session: AuthSessionService,
+    private modalService: ModalService
   ) { }
 
   ngOnInit(): void {
@@ -85,8 +87,11 @@ export class EventListComponent implements OnInit {
     if (this.isLoggedIn) {
       this.showCreateModal = true;
     } else {
-      // Redirect to login or show alert
-      alert('Debes estar registrado para crear un evento.');
+      this.modalService.show({
+        title: 'Acceso Denegado',
+        message: 'Debes estar registrado para crear un evento.',
+        type: 'warning'
+      });
     }
   }
 

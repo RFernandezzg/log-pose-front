@@ -5,6 +5,7 @@ import { EventService } from '../../core/event.service';
 import { AuthSessionService } from '../../core/auth-session.service';
 import { AuthUser } from '../../core/auth.models';
 import { TranslateModule } from '@ngx-translate/core';
+import { ModalService } from '../../core/modal.service';
 
 @Component({
   selector: 'app-event-card',
@@ -83,7 +84,8 @@ export class EventCardComponent implements OnInit {
 
   constructor(
     private eventService: EventService,
-    private session: AuthSessionService
+    private session: AuthSessionService,
+    private modalService: ModalService
   ) { }
 
   ngOnInit(): void {
@@ -101,7 +103,11 @@ export class EventCardComponent implements OnInit {
 
   toggleRegistration(): void {
     if (!this.currentUsername) {
-      alert('Debes estar registrado para unirte a un evento.');
+      this.modalService.show({
+        title: 'Acceso Denegado',
+        message: 'Debes estar registrado para unirte a un evento.',
+        type: 'warning'
+      });
       return;
     }
 
@@ -119,7 +125,11 @@ export class EventCardComponent implements OnInit {
       });
     } else {
       if (this.isFull) {
-        alert('Este evento ya ha alcanzado el máximo de asistentes.');
+        this.modalService.show({
+          title: 'Evento Lleno',
+          message: 'Este evento ya ha alcanzado el máximo de asistentes.',
+          type: 'info'
+        });
         return;
       }
       this.eventService.registerAttendee(this.event.id).subscribe({

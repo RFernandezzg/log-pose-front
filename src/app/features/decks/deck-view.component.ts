@@ -10,6 +10,7 @@ import { ColorUtilsService } from '../../core/color-utils.service';
 import { DateFormatPipe } from '../../shared/pipes/date-format.pipe';
 import { environment } from '../../../environments/environment';
 import { jsPDF } from 'jspdf';
+import { ModalService } from '../../core/modal.service';
 
 interface CardWithQuantity extends ExternalCardDto {
   quantity: number;
@@ -56,7 +57,8 @@ export class DeckViewComponent implements OnInit {
     private authSession: AuthSessionService,
     private route: ActivatedRoute,
     public router: Router,
-    public colorUtils: ColorUtilsService
+    public colorUtils: ColorUtilsService,
+    private modalService: ModalService
   ) { }
 
   ngOnInit(): void {
@@ -148,12 +150,29 @@ export class DeckViewComponent implements OnInit {
 
   deleteDeck(): void {
     if (!this.deck) return;
-    if (confirm(`¿Estás seguro de que deseas eliminar el mazo "${this.deck.name}"?`)) {
-      this.deckService.deleteDeck(this.deck.id).subscribe({
-        next: () => { alert('Mazo eliminado correctamente.'); this.router.navigate(['/decks']); },
-        error: () => alert('Error al eliminar el mazo.')
-      });
-    }
+    this.modalService.show({
+      title: 'Eliminar Mazo',
+      message: `¿Estás seguro de que deseas eliminar el mazo "${this.deck.name}"?`,
+      type: 'warning',
+      showCancel: true,
+      onConfirm: () => {
+        this.deckService.deleteDeck(this.deck!.id).subscribe({
+          next: () => {
+            this.modalService.show({
+              title: 'Éxito',
+              message: 'Mazo eliminado correctamente.',
+              type: 'success'
+            });
+            this.router.navigate(['/decks']);
+          },
+          error: () => this.modalService.show({
+            title: 'Error',
+            message: 'Error al eliminar el mazo.',
+            type: 'error'
+          })
+        });
+      }
+    });
   }
 
   toggleLike(): void {
@@ -413,7 +432,11 @@ export class DeckViewComponent implements OnInit {
       doc.save(`${this.deck.name.replace(/[^a-z0-9]/gi, '_')}_deck.pdf`);
     } catch (err) {
       console.error('Error generating PDF:', err);
-      alert('Error al generar el PDF. Comprueba la consola para más detalles.');
+      this.modalService.show({
+        title: 'Error PDF',
+        message: 'Error al generar el PDF. Comprueba la consola para más detalles.',
+        type: 'error'
+      });
     } finally {
       this.exportingPdf = false;
     }
