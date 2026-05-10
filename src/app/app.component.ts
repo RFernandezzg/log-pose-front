@@ -18,17 +18,23 @@ import { ModalComponent } from './shared/components/modal/modal.component';
 export class AppComponent {
   title = 'frontend';
   showLangDropdown = false;
+  mobileMenuOpen = false;
 
   constructor(
     public session: AuthSessionService,
     private auth: AuthService,
     public router: Router,
     public langService: LanguageService
-  ) {}
+  ) { }
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
 
   setLanguage(lang: 'es' | 'en'): void {
     this.langService.setLanguage(lang);
     this.showLangDropdown = false;
+    this.mobileMenuOpen = false;
   }
 
   logout(): void {

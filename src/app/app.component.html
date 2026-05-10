@@ -5,61 +5,9 @@
         <span class="text-[#857752]">⚓</span> LogPose
       </a>
 
-      <nav class="flex items-center gap-3 text-sm">
-        <a routerLink="/" routerLinkActive="bg-[#857752] text-white" [routerLinkActiveOptions]="{exact: true}"
-          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">{{ 'NAV.HOME' |
-          translate }}</a>
-        <a routerLink="/shop" routerLinkActive="bg-[#857752] text-white"
-          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium flex items-center gap-1">🛒
-          {{ 'NAV.SHOP' | translate }}</a>
-        <a routerLink="/cards" routerLinkActive="bg-[#857752] text-white"
-          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">{{ 'NAV.CARDS' |
-          translate }}</a>
-        <a routerLink="/events" routerLinkActive="bg-[#857752] text-white"
-          class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">📅 {{ 'NAV.EVENTS'
-          | translate }}</a>
-
-        <!-- Dropdown Decks -->
-        <div class="relative group">
-          <button
-            class="flex items-center gap-1 rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">
-            {{ 'NAV.DECKS.TITLE' | translate }}
-            <svg xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none"
-              viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          <!-- Invisible bridge to keep hover state stable -->
-          <div class="absolute top-full left-0 w-full h-2 bg-transparent"></div>
-
-          <div
-            class="absolute left-0 top-[calc(100%+4px)] w-56 bg-[#1d2269] border border-[#857752]/30 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50 overflow-hidden backdrop-blur-xl">
-            <div class="py-2">
-              <a routerLink="/decks/explore"
-                class="flex items-center gap-3 px-5 py-3 text-slate-200 hover:bg-[#857752]/20 transition-colors">
-                <span class="text-xl">🌐</span>
-                <span class="font-medium">{{ 'NAV.DECKS.EXPLORE' | translate }}</span>
-              </a>
-              <a routerLink="/decks"
-                class="flex items-center gap-3 px-5 py-3 text-slate-200 hover:bg-[#857752]/20 transition-colors border-t border-white/5">
-                <span class="text-xl">🃏</span>
-                <span class="font-medium">{{ 'NAV.DECKS.MY_DECKS' | translate }}</span>
-              </a>
-              <a routerLink="/decks/build"
-                class="flex items-center gap-3 px-5 py-3 text-[#857752] hover:bg-[#857752]/10 transition-colors border-t border-white/5">
-                <span class="text-xl">⚒️</span>
-                <span class="font-bold">{{ 'NAV.DECKS.BUILDER' | translate }}</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="h-6 w-px bg-white/10 mx-2"></div>
-
-        <!-- Selector de Idioma -->
-        <div class="relative">
+      <div class="flex items-center gap-4">
+        <!-- Selector de Idioma (Visible en desktop) -->
+        <div class="relative hidden md:block">
           <button (click)="showLangDropdown = !showLangDropdown"
             class="flex items-center gap-2 rounded-full px-3 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium border border-[#857752]/20">
             <span class="text-lg">{{ langService.getCurrentLang() === 'es' ? '🇪🇸' : '🇬🇧' }}</span>
@@ -86,47 +34,203 @@
           </div>
         </div>
 
-        <div class="h-6 w-px bg-white/10 mx-2"></div>
+        <nav class="hidden md:flex items-center gap-3 text-sm">
+          <a routerLink="/" routerLinkActive="bg-[#857752] text-white" [routerLinkActiveOptions]="{exact: true}"
+            class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">{{ 'NAV.HOME' |
+            translate }}</a>
+          <a routerLink="/shop" routerLinkActive="bg-[#857752] text-white"
+            class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium flex items-center gap-1">🛒
+            {{ 'NAV.SHOP' | translate }}</a>
+          <a routerLink="/cards" routerLinkActive="bg-[#857752] text-white"
+            class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">{{ 'NAV.CARDS' |
+            translate }}</a>
+          <a routerLink="/events" routerLinkActive="bg-[#857752] text-white"
+            class="rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">📅 {{ 'NAV.EVENTS'
+            | translate }}</a>
 
-        <a *ngIf="!session.isAuthenticated()" routerLink="/auth/login" [queryParams]="{ returnUrl: router.url }"
-          class="rounded-full bg-[#857752] px-6 py-2.5 font-bold text-white hover:bg-[#a3946b] shadow-lg shadow-[#857752]/20 transition-all active:scale-95 text-sm">
-          {{ 'NAV.LOGIN' | translate }}
-        </a>
-        <!-- Dropdown Perfil -->
-        <div *ngIf="session.isAuthenticated()" class="relative group">
-          <button
-            class="flex items-center gap-2 rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium border border-transparent hover:border-[#857752]/30">
-            <img *ngIf="session.user?.avatarUrl" [src]="session.user?.avatarUrl" alt="Avatar"
-              class="h-6 w-6 rounded-full object-cover border border-[#857752]/50 shadow-sm" />
-            <span *ngIf="!session.user?.avatarUrl" class="text-xl">👤</span>
-            {{ session.user?.username || 'Perfil' }}
-            <svg xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none"
-              viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+          <!-- Dropdown Decks -->
+          <div class="relative group">
+            <button
+              class="flex items-center gap-1 rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium">
+              {{ 'NAV.DECKS.TITLE' | translate }}
+              <svg xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
 
-          <!-- Invisible bridge to keep hover state stable -->
-          <div class="absolute top-full left-0 w-full h-2 bg-transparent"></div>
+            <!-- Invisible bridge to keep hover state stable -->
+            <div class="absolute top-full left-0 w-full h-2 bg-transparent"></div>
 
-          <div
-            class="absolute right-0 top-[calc(100%+4px)] w-48 bg-[#1d2269] border border-[#857752]/30 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50 overflow-hidden backdrop-blur-xl">
-            <div class="py-2">
-              <a routerLink="/profile"
-                class="flex items-center gap-3 px-5 py-3 text-slate-200 hover:bg-[#857752]/20 transition-colors">
-                <span class="text-xl">⚙️</span>
-                <span class="font-medium">{{ 'NAV.PROFILE' | translate }}</span>
-              </a>
-              <button type="button" (click)="logout()"
-                class="w-full flex items-center gap-3 px-5 py-3 text-rose-300 hover:bg-rose-500/20 transition-colors border-t border-white/5 text-left">
-                <span class="text-xl">🚪</span>
-                <span class="font-bold">{{ 'NAV.LOGOUT' | translate }}</span>
-              </button>
+            <div
+              class="absolute left-0 top-[calc(100%+4px)] w-56 bg-[#1d2269] border border-[#857752]/30 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50 overflow-hidden backdrop-blur-xl">
+              <div class="py-2">
+                <a routerLink="/decks/explore"
+                  class="flex items-center gap-3 px-5 py-3 text-slate-200 hover:bg-[#857752]/20 transition-colors">
+                  <span class="text-xl">🌐</span>
+                  <span class="font-medium">{{ 'NAV.DECKS.EXPLORE' | translate }}</span>
+                </a>
+                <a routerLink="/decks"
+                  class="flex items-center gap-3 px-5 py-3 text-slate-200 hover:bg-[#857752]/20 transition-colors border-t border-white/5">
+                  <span class="text-xl">🃏</span>
+                  <span class="font-medium">{{ 'NAV.DECKS.MY_DECKS' | translate }}</span>
+                </a>
+                <a routerLink="/decks/build"
+                  class="flex items-center gap-3 px-5 py-3 text-[#857752] hover:bg-[#857752]/10 transition-colors border-t border-white/5">
+                  <span class="text-xl">⚒️</span>
+                  <span class="font-bold">{{ 'NAV.DECKS.BUILDER' | translate }}</span>
+                </a>
+              </div>
             </div>
           </div>
+
+          <div class="h-6 w-px bg-white/10 mx-2"></div>
+
+          <a *ngIf="!session.isAuthenticated()" routerLink="/auth/login" [queryParams]="{ returnUrl: router.url }"
+            class="rounded-full bg-[#857752] px-6 py-2.5 font-bold text-white hover:bg-[#a3946b] shadow-lg shadow-[#857752]/20 transition-all active:scale-95 text-sm">
+            {{ 'NAV.LOGIN' | translate }}
+          </a>
+
+          <!-- Dropdown Perfil -->
+          <div *ngIf="session.isAuthenticated()" class="relative group">
+            <button
+              class="flex items-center gap-2 rounded-full px-4 py-2 text-slate-200 hover:bg-white/10 transition-all font-medium border border-transparent hover:border-[#857752]/30">
+              <img *ngIf="session.user?.avatarUrl" [src]="session.user?.avatarUrl" alt="Avatar"
+                class="h-6 w-6 rounded-full object-cover border border-[#857752]/50 shadow-sm" />
+              <span *ngIf="!session.user?.avatarUrl" class="text-xl">👤</span>
+              {{ session.user?.username || 'Perfil' }}
+              <svg xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            <!-- Invisible bridge to keep hover state stable -->
+            <div class="absolute top-full left-0 w-full h-2 bg-transparent"></div>
+
+            <div
+              class="absolute right-0 top-[calc(100%+4px)] w-48 bg-[#1d2269] border border-[#857752]/30 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50 overflow-hidden backdrop-blur-xl">
+              <div class="py-2">
+                <a routerLink="/profile"
+                  class="flex items-center gap-3 px-5 py-3 text-slate-200 hover:bg-[#857752]/20 transition-colors">
+                  <span class="text-xl">⚙️</span>
+                  <span class="font-medium">{{ 'NAV.PROFILE' | translate }}</span>
+                </a>
+                <button type="button" (click)="logout()"
+                  class="w-full flex items-center gap-3 px-5 py-3 text-rose-300 hover:bg-rose-500/20 transition-colors border-t border-white/5 text-left">
+                  <span class="text-xl">🚪</span>
+                  <span class="font-bold">{{ 'NAV.LOGOUT' | translate }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Botón Menú Móvil -->
+        <button (click)="toggleMobileMenu()"
+          class="md:hidden flex items-center justify-center p-2 rounded-xl bg-white/5 text-slate-200 hover:bg-white/10 transition-all border border-[#857752]/20">
+          <svg *ngIf="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg *ngIf="mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menú Móvil Desplegable -->
+    <div *ngIf="mobileMenuOpen"
+      class="md:hidden border-t border-[#857752]/20 bg-[#1d2269] animate-in slide-in-from-top duration-300">
+      <div class="px-4 py-6 space-y-4">
+        <div class="flex flex-col gap-2">
+          <a routerLink="/" (click)="mobileMenuOpen = false" routerLinkActive="bg-[#857752] text-white"
+            [routerLinkActiveOptions]="{exact: true}"
+            class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all font-medium">
+            <span>🏠</span> {{ 'NAV.HOME' | translate }}
+          </a>
+          <a routerLink="/shop" (click)="mobileMenuOpen = false" routerLinkActive="bg-[#857752] text-white"
+            class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all font-medium">
+            <span>🛒</span> {{ 'NAV.SHOP' | translate }}
+          </a>
+          <a routerLink="/cards" (click)="mobileMenuOpen = false" routerLinkActive="bg-[#857752] text-white"
+            class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all font-medium">
+            <span>🃏</span> {{ 'NAV.CARDS' | translate }}
+          </a>
+          <a routerLink="/events" (click)="mobileMenuOpen = false" routerLinkActive="bg-[#857752] text-white"
+            class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all font-medium">
+            <span>📅</span> {{ 'NAV.EVENTS' | translate }}
+          </a>
         </div>
-      </nav>
+
+        <div class="pt-4 border-t border-white/5">
+          <p class="px-4 mb-2 text-xs font-bold uppercase tracking-widest text-[#857752] opacity-60">
+            {{ 'NAV.DECKS.TITLE' | translate }}
+          </p>
+          <div class="flex flex-col gap-1">
+            <a routerLink="/decks/explore" (click)="mobileMenuOpen = false"
+              class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all">
+              <span>🌐</span> {{ 'NAV.DECKS.EXPLORE' | translate }}
+            </a>
+            <a routerLink="/decks" (click)="mobileMenuOpen = false"
+              class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all">
+              <span>🃏</span> {{ 'NAV.DECKS.MY_DECKS' | translate }}
+            </a>
+            <a routerLink="/decks/build" (click)="mobileMenuOpen = false"
+              class="flex items-center gap-3 px-4 py-3 rounded-2xl text-[#857752] bg-[#857752]/10 font-bold">
+              <span>⚒️</span> {{ 'NAV.DECKS.BUILDER' | translate }}
+            </a>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-white/5 flex items-center justify-between px-4">
+          <span class="text-sm font-medium text-slate-400">Idioma / Language</span>
+          <div class="flex gap-2">
+            <button (click)="setLanguage('es')"
+              class="p-2 rounded-xl border transition-all"
+              [ngClass]="langService.getCurrentLang() === 'es' ? 'border-[#857752] bg-[#857752]/20' : 'border-white/10 bg-white/5'">
+              🇪🇸
+            </button>
+            <button (click)="setLanguage('en')"
+              class="p-2 rounded-xl border transition-all"
+              [ngClass]="langService.getCurrentLang() === 'en' ? 'border-[#857752] bg-[#857752]/20' : 'border-white/10 bg-white/5'">
+              🇬🇧
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-6">
+          <a *ngIf="!session.isAuthenticated()" routerLink="/auth/login" (click)="mobileMenuOpen = false"
+            class="flex items-center justify-center w-full rounded-2xl bg-[#857752] px-6 py-4 font-bold text-white shadow-lg shadow-[#857752]/20 transition-all">
+            {{ 'NAV.LOGIN' | translate }}
+          </a>
+
+          <div *ngIf="session.isAuthenticated()" class="space-y-2">
+            <div class="flex items-center gap-3 px-4 py-3 mb-2">
+              <img *ngIf="session.user?.avatarUrl" [src]="session.user?.avatarUrl" alt="Avatar"
+                class="h-10 w-10 rounded-full object-cover border-2 border-[#857752]" />
+              <span *ngIf="!session.user?.avatarUrl" class="text-2xl">👤</span>
+              <div class="flex flex-col">
+                <span class="font-bold text-white">{{ session.user?.username }}</span>
+                <span class="text-xs text-[#857752]">{{ 'NAV.PROFILE' | translate }}</span>
+              </div>
+            </div>
+            <a routerLink="/profile" (click)="mobileMenuOpen = false"
+              class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all font-medium">
+              <span>⚙️</span> {{ 'NAV.PROFILE' | translate }}
+            </a>
+            <button type="button" (click)="logout(); mobileMenuOpen = false"
+              class="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-rose-400 hover:bg-rose-500/10 transition-all font-bold text-left">
+              <span>🚪</span> {{ 'NAV.LOGOUT' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     </div>
   </header>
 
