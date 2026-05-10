@@ -30,10 +30,10 @@ export class DeckBuilderComponent implements OnInit {
   deckName: string = '';
   deckDescription: string = '';
   deckIsPublic: boolean = true;
-  
+
   selectedLeader: ExternalCardDto | null = null;
   deckCards: Map<string, { card: ExternalCardDto, quantity: number }> = new Map();
-  
+
   editingDeckId: number | null = null;
   isLoading: boolean = false;
 
@@ -80,14 +80,14 @@ export class DeckBuilderComponent implements OnInit {
   // UI options
   sets: any[] = [];
   typesOptions: string[] = [];
-  rarityOptions: string[] = ['L', 'C', 'UC', 'R', 'SR', 'SEC', 'TR'];
+  rarityOptions: string[] = ['L', 'C', 'UC', 'R', 'SR', 'SEC', 'P', 'TR'];
   attributeOptions: string[] = ['Special', 'Wisdom', 'Ranged', 'Slash', 'Strike', '?'];
   colorsOptions: string[] = ['Blue', 'Red', 'Green', 'Black', 'Yellow', 'Purple'];
   keywordsList = [
     'On Play', 'Blocker', 'Rush', 'Banish', 'Double Attack', 'Activate: Main', 'When attacking', 'On Block', 'On K.O', 'End of your turn', 'Opponent\'s turn', 'On Your Opponent\'s Attack', 'Main', 'Counter'
   ];
-  costsList = Array.from({ length: 10 }, (_, i) => i + 1);
-  
+  costsList = Array.from({ length: 11 }, (_, i) => i);
+
   // Pagination
   pageSize = 24;
   currentPage = 1;
@@ -159,7 +159,7 @@ export class DeckBuilderComponent implements OnInit {
     // Posición vertical: intenta mantener la carta en el centro, pero ajusta si sale de pantalla
     let previewY = rect.top + rect.height / 2 - previewHeight / 2;
     const windowHeight = window.innerHeight;
-    
+
     // Si sale por arriba, ajusta
     if (previewY < padding) {
       previewY = padding;
@@ -296,6 +296,9 @@ export class DeckBuilderComponent implements OnInit {
   }
 
   increaseCardQuantity(deckEntry: { key: string; card: ExternalCardDto; quantity: number }): void {
+    if (deckEntry.key === 'leader') {
+      return; // Leader quantity is always 1
+    }
     const current = this.deckCards.get(deckEntry.key);
     if (!current) {
       return;
@@ -315,6 +318,10 @@ export class DeckBuilderComponent implements OnInit {
   }
 
   decreaseCardQuantity(deckEntry: { key: string; card: ExternalCardDto; quantity: number }): void {
+    if (deckEntry.key === 'leader') {
+      this.removeLeader();
+      return;
+    }
     const current = this.deckCards.get(deckEntry.key);
     if (!current) {
       return;
@@ -337,7 +344,7 @@ export class DeckBuilderComponent implements OnInit {
     private route: ActivatedRoute,
     private fb: FormBuilder,
     public colorUtils: ColorUtilsService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Cargar sets y opciones de filtros
@@ -382,14 +389,14 @@ export class DeckBuilderComponent implements OnInit {
 
   loadDeckForEditing(): void {
     if (!this.editingDeckId) return;
-    
+
     this.isLoading = true;
     this.deckService.getDeckById(this.editingDeckId).subscribe({
       next: (deck) => {
         this.deckName = deck.name;
         this.deckDescription = deck.description || '';
         this.deckIsPublic = deck.isPublic !== false; // default true if not specified
-        
+
         // Buscar y cargar el líder
         this.cardsService.getCardById(deck.leaderCardId).subscribe({
           next: (card: any) => {
@@ -397,7 +404,7 @@ export class DeckBuilderComponent implements OnInit {
           },
           error: (err: any) => console.error('Error loading leader:', err)
         });
-        
+
         // Cargar las cartas del mazo
         const cardIds = Object.keys(deck.cards);
         if (cardIds.length > 0) {
@@ -439,7 +446,7 @@ export class DeckBuilderComponent implements OnInit {
 
   search(): void {
     const filterValues = this.filters.getRawValue();
-    
+
     const buildArrayFilter = (value: any): string[] | undefined => {
       return value && Array.isArray(value) && value.length > 0 ? value : undefined;
     };
@@ -503,6 +510,26 @@ export class DeckBuilderComponent implements OnInit {
     return values.includes(value);
   }
 
+  clearFilters(): void {
+    this.filters.reset({
+      nameOrId: '',
+      text: '',
+      set: '',
+      subTypes: '',
+      types: null,
+      rarity: null,
+      attributes: null,
+      keywords: null,
+      counterFilters: null,
+      colors: null,
+      hasTrigger: false,
+      costs: null,
+      powerMin: 0,
+      powerMax: 13000
+    } as any);
+    this.search();
+  }
+
   addCardToDeck(card: ExternalCardDto) {
     if ((card.type ?? '').toLowerCase() === 'leader') {
       this.selectedLeader = card;
@@ -543,8 +570,8 @@ export class DeckBuilderComponent implements OnInit {
   }
 
   get deckCardsList() {
-    // Ordenamos por coste
-    return Array.from(this.deckCards.entries())
+    // Ordenamos por coste las cartas normales
+    const list = Array.from(this.deckCards.entries())
       .sort((a, b) => {
         const costA = parseInt(a[1].card.cost || '0');
         const costB = parseInt(b[1].card.cost || '0');
@@ -553,8 +580,21 @@ export class DeckBuilderComponent implements OnInit {
       .map(([key, value]) => ({
         key,
         card: value.card,
-        quantity: value.quantity
+        quantity: value.quantity,
+        isLeader: false
       }));
+
+    // Si hay líder, lo ponemos al principio
+    if (this.selectedLeader) {
+      list.unshift({
+        key: 'leader',
+        card: this.selectedLeader,
+        quantity: 1,
+        isLeader: true
+      });
+    }
+
+    return list;
   }
 
   private buildDetailSlides(base: ExternalCardDto, versions: ExternalCardDto[]): ExternalCardDto[] {
