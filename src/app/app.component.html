@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-[#0b0d2a] text-slate-100">
+<div class="min-h-screen bg-[#0b0d2a] text-slate-100 overflow-x-hidden">
   <header class="sticky top-0 z-[100] border-b border-[#857752]/20 bg-[#1d2269]/90 backdrop-blur-md">
     <div class="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-4 py-4 lg:px-6 xl:px-8">
       <a routerLink="/" class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
@@ -151,20 +151,20 @@
       class="md:hidden border-t border-[#857752]/20 bg-[#1d2269] animate-in slide-in-from-top duration-300">
       <div class="px-4 py-6 space-y-4">
         <div class="flex flex-col gap-2">
-          <a routerLink="/" (click)="mobileMenuOpen = false" routerLinkActive="bg-[#857752] text-white"
+          <a routerLink="/" (click)="closeMobileMenu()" routerLinkActive="bg-[#857752] text-white"
             [routerLinkActiveOptions]="{exact: true}"
             class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all font-medium">
             <span>🏠</span> {{ 'NAV.HOME' | translate }}
           </a>
-          <a routerLink="/shop" (click)="mobileMenuOpen = false" routerLinkActive="bg-[#857752] text-white"
+          <a routerLink="/shop" (click)="closeMobileMenu()" routerLinkActive="bg-[#857752] text-white"
             class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all font-medium">
             <span>🛒</span> {{ 'NAV.SHOP' | translate }}
           </a>
-          <a routerLink="/cards" (click)="mobileMenuOpen = false" routerLinkActive="bg-[#857752] text-white"
+          <a routerLink="/cards" (click)="closeMobileMenu()" routerLinkActive="bg-[#857752] text-white"
             class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all font-medium">
             <span>🃏</span> {{ 'NAV.CARDS' | translate }}
           </a>
-          <a routerLink="/events" (click)="mobileMenuOpen = false" routerLinkActive="bg-[#857752] text-white"
+          <a routerLink="/events" (click)="closeMobileMenu()" routerLinkActive="bg-[#857752] text-white"
             class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all font-medium">
             <span>📅</span> {{ 'NAV.EVENTS' | translate }}
           </a>
@@ -175,15 +175,15 @@
             {{ 'NAV.DECKS.TITLE' | translate }}
           </p>
           <div class="flex flex-col gap-1">
-            <a routerLink="/decks/explore" (click)="mobileMenuOpen = false"
+            <a routerLink="/decks/explore" (click)="closeMobileMenu()"
               class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all">
               <span>🌐</span> {{ 'NAV.DECKS.EXPLORE' | translate }}
             </a>
-            <a routerLink="/decks" (click)="mobileMenuOpen = false"
+            <a routerLink="/decks" (click)="closeMobileMenu()"
               class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all">
               <span>🃏</span> {{ 'NAV.DECKS.MY_DECKS' | translate }}
             </a>
-            <a routerLink="/decks/build" (click)="mobileMenuOpen = false"
+            <a routerLink="/decks/build" (click)="closeMobileMenu()"
               class="flex items-center gap-3 px-4 py-3 rounded-2xl text-[#857752] bg-[#857752]/10 font-bold">
               <span>⚒️</span> {{ 'NAV.DECKS.BUILDER' | translate }}
             </a>
@@ -205,7 +205,7 @@
         </div>
 
         <div class="pt-6">
-          <a *ngIf="!session.isAuthenticated()" routerLink="/auth/login" (click)="mobileMenuOpen = false"
+          <a *ngIf="!session.isAuthenticated()" routerLink="/auth/login" (click)="closeMobileMenu()"
             class="flex items-center justify-center w-full rounded-2xl bg-[#857752] px-6 py-4 font-bold text-white shadow-lg shadow-[#857752]/20 transition-all">
             {{ 'NAV.LOGIN' | translate }}
           </a>
@@ -220,11 +220,11 @@
                 <span class="text-xs text-[#857752]">{{ 'NAV.PROFILE' | translate }}</span>
               </div>
             </div>
-            <a routerLink="/profile" (click)="mobileMenuOpen = false"
+            <a routerLink="/profile" (click)="closeMobileMenu()"
               class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-200 hover:bg-white/5 transition-all font-medium">
               <span>⚙️</span> {{ 'NAV.PROFILE' | translate }}
             </a>
-            <button type="button" (click)="logout(); mobileMenuOpen = false"
+            <button type="button" (click)="logout(); closeMobileMenu()"
               class="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-rose-400 hover:bg-rose-500/10 transition-all font-bold text-left">
               <span>🚪</span> {{ 'NAV.LOGOUT' | translate }}
             </button>
@@ -234,7 +234,7 @@
     </div>
   </header>
 
-  <main class="mx-auto w-full max-w-screen-2xl px-4 py-8 lg:px-6 xl:px-8">
+  <main class="mx-auto w-full max-w-screen-2xl px-4 py-8 lg:px-6 xl:px-8 overflow-x-hidden">
     <router-outlet></router-outlet>
   </main>
 </div>

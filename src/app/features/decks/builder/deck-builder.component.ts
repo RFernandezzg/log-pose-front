@@ -200,6 +200,10 @@ export class DeckBuilderComponent implements OnInit {
   }
 
   openCardDetail(card: ExternalCardDto, deckCardKey: string): void {
+    // No abrimos la modal en móvil (pantallas < 768px)
+    if (window.innerWidth < 768) {
+      return;
+    }
     this.selectedDeckCardKey = deckCardKey;
     this.detailOpen = true;
     this.detailLoading = true;

@@ -29,16 +29,27 @@ export class AppComponent {
 
   toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
+    if (this.mobileMenuOpen) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
+    document.body.classList.remove('no-scroll');
   }
 
   setLanguage(lang: 'es' | 'en'): void {
     this.langService.setLanguage(lang);
     this.showLangDropdown = false;
-    this.mobileMenuOpen = false;
+    this.closeMobileMenu();
   }
 
   logout(): void {
     this.auth.logout();
+    this.closeMobileMenu();
     this.router.navigate(['/']);
   }
 }
