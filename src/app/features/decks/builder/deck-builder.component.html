@@ -157,8 +157,9 @@
           <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-6">
             <article *ngFor="let card of pagedAvailableCards"
               class="group relative overflow-hidden rounded-[2rem] bg-[#0b0d2a]/40 border border-white/5 transition-all duration-300 hover:border-[#857752]/50 hover:shadow-2xl">
-              <div class="aspect-[3/4] p-3 relative cursor-help" (mouseenter)="onCardHover(card, $event)"
-                (mouseleave)="onCardLeave()">
+              <div class="aspect-[3/4] p-3 relative cursor-help"
+                (mouseenter)="!isMobile && onCardHover(card, $event)"
+                (mouseleave)="!isMobile && onCardLeave()">
                 <img [src]="card.imageUrl" [alt]="card.name"
                   class="h-full w-full rounded-2xl object-cover transition-transform duration-500 group-hover:scale-105">
                 <div
@@ -267,8 +268,7 @@
         <!-- Scrollable List -->
         <div class="flex-1 overflow-y-auto custom-scrollbar pr-4 space-y-3">
           <div *ngFor="let item of deckCardsList" (click)="openCardDetail(item.card, item.key)"
-            class="group flex items-center gap-4 p-3 rounded-2xl bg-[#0b0d2a]/40 border border-white/5 hover:border-[#857752]/30 transition-all"
-            [class.cursor-pointer]="!isMobile"
+            class="group flex items-center gap-4 p-3 rounded-2xl bg-[#0b0d2a]/40 border border-white/5 hover:border-[#857752]/30 transition-all cursor-pointer"
             [ngClass]="item.isLeader ? getBorderColorClass(item.card.color || '') + ' border-2 shadow-lg' : ''">
             <div class="h-16 w-12 rounded-lg overflow-hidden flex-shrink-0 bg-black/40 relative">
               <img [src]="item.card.imageUrl" class="h-full w-full object-cover">
@@ -307,8 +307,8 @@
     </aside>
   </div>
 
-  <!-- Card Preview on Hover -->
-  <div *ngIf="hoveredCard" class="fixed z-[500] pointer-events-none animate-in fade-in zoom-in-95 duration-200"
+  <!-- Card Preview on Hover - Solo en escritorio -->
+  <div *ngIf="hoveredCard && !isMobile" class="fixed z-[500] pointer-events-none animate-in fade-in zoom-in-95 duration-200"
     [style.left.px]="previewX" [style.top.px]="previewY">
     <div
       class="w-80 rounded-[2rem] border-2 border-[#857752]/50 bg-[#1d2269] p-4 shadow-[0_30px_60px_rgba(0,0,0,0.8)] gold-glow">
@@ -329,8 +329,8 @@
     </div>
   </div>
 
-  <!-- Card Detail Modal (para cambiar versiones) - Solo en escritorio -->
-  <div *ngIf="detailOpen && !isMobile"
+  <!-- Card Detail Modal (para cambiar versiones) -->
+  <div *ngIf="detailOpen"
     class="fixed inset-0 z-[600] flex items-center justify-center bg-[#0b0d2a]/90 backdrop-blur-md p-4 animate-in fade-in duration-300"
     (click)="closeCardDetail()">
     <div
