@@ -267,7 +267,8 @@
         <!-- Scrollable List -->
         <div class="flex-1 overflow-y-auto custom-scrollbar pr-4 space-y-3">
           <div *ngFor="let item of deckCardsList" (click)="openCardDetail(item.card, item.key)"
-            class="group flex items-center gap-4 p-3 rounded-2xl bg-[#0b0d2a]/40 border border-white/5 hover:border-[#857752]/30 transition-all cursor-pointer"
+            class="group flex items-center gap-4 p-3 rounded-2xl bg-[#0b0d2a]/40 border border-white/5 hover:border-[#857752]/30 transition-all"
+            [class.cursor-pointer]="!isMobile"
             [ngClass]="item.isLeader ? getBorderColorClass(item.card.color || '') + ' border-2 shadow-lg' : ''">
             <div class="h-16 w-12 rounded-lg overflow-hidden flex-shrink-0 bg-black/40 relative">
               <img [src]="item.card.imageUrl" class="h-full w-full object-cover">
@@ -328,8 +329,8 @@
     </div>
   </div>
 
-  <!-- Card Detail Modal (para cambiar versiones) -->
-  <div *ngIf="detailOpen"
+  <!-- Card Detail Modal (para cambiar versiones) - Solo en escritorio -->
+  <div *ngIf="detailOpen && !isMobile"
     class="fixed inset-0 z-[600] flex items-center justify-center bg-[#0b0d2a]/90 backdrop-blur-md p-4 animate-in fade-in duration-300"
     (click)="closeCardDetail()">
     <div

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CardsService } from '../../cards/cards.service';
@@ -36,6 +36,14 @@ export class DeckBuilderComponent implements OnInit {
 
   editingDeckId: number | null = null;
   isLoading: boolean = false;
+
+  // Mobile detection (reactive)
+  isMobile: boolean = window.innerWidth < 768;
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.isMobile = window.innerWidth < 768;
+  }
 
   // Card preview on hover
   hoveredCard: ExternalCardDto | null = null;
@@ -200,8 +208,8 @@ export class DeckBuilderComponent implements OnInit {
   }
 
   openCardDetail(card: ExternalCardDto, deckCardKey: string): void {
-    // No abrimos la modal en móvil (pantallas < 768px)
-    if (window.innerWidth < 768) {
+    // No abrimos la modal en móvil
+    if (this.isMobile) {
       return;
     }
     this.selectedDeckCardKey = deckCardKey;
